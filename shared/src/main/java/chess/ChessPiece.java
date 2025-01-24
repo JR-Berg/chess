@@ -103,7 +103,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList) {
         /*I want to implement a set of values that can be used to track all possible directions
-         * That this piece can move, so I am gonna make two arrays. One (directionRow) tracks the
+         * That this piece can move, so I will make two arrays. One (directionRow) tracks the
          * vertical direction [so the change made to the piece's Row] and the other (directionCol)
          * tracks the horizontal direction. Bishops can move diagonally, so the possible values would
          * be (1,1) for up and right, (-1,-1) for down and left, (1,-1) for up and left, and (-1,1) for
@@ -244,45 +244,44 @@ public class ChessPiece {
         }
         return movesList;
     }
+
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList) {
         //teamMod is negative (moves down) if the team color is black, positive (moves up) if white.
-        int teamMod = 0;
+        int teamMod;
         int newRow = myPosition.getRow();
         int newCol = myPosition.getColumn();
         boolean promotionIncoming = false;
         boolean hop = false;
-        PieceType [] promotions = {PieceType.BISHOP, PieceType.ROOK, PieceType.KNIGHT, PieceType.QUEEN};
-        if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+        PieceType[] promotions = {PieceType.BISHOP, PieceType.ROOK, PieceType.KNIGHT, PieceType.QUEEN};
+        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
             teamMod = -1;
-            if(newRow + teamMod == 1) {
+            if (newRow + teamMod == 1) {
                 promotionIncoming = true;
             }
-            if(newRow != 7) {
+            if (newRow != 7) {
                 hasMoved = true;
             }
-        }
-        else {
+        } else {
             teamMod = 1;
-            if(newRow + teamMod == 8) {
+            if (newRow + teamMod == 8) {
                 promotionIncoming = true;
             }
-            if(newRow != 2) {
+            if (newRow != 2) {
                 hasMoved = true;
             }
         }
-        while(!hop) {
+        while (!hop) {
             newRow += teamMod;
             if (newRow <= 0 || newRow > board.getRowBounds()) {
                 break;
             }
             ChessPosition oneHop = new ChessPosition(newRow, newCol);
-            if(board.getPiece(oneHop) == null) {
-                if(promotionIncoming) {
-                    for(int i = 0; i < 4; i++) {
+            if (board.getPiece(oneHop) == null) {
+                if (promotionIncoming) {
+                    for (int i = 0; i < 4; i++) {
                         movesList.add(new ChessMove(myPosition, oneHop, promotions[i]));
                     }
-                }
-                else {
+                } else {
                     movesList.add(new ChessMove(myPosition, oneHop, null));
                 }
             }
@@ -291,13 +290,12 @@ public class ChessPiece {
                 break;
             }
             ChessPosition takeLeft = new ChessPosition(newRow, newerCol);
-            if(board.getPiece(takeLeft) != null && board.getPiece(takeLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                if(promotionIncoming) {
-                    for(int i = 0; i < 4; i++) {
+            if (board.getPiece(takeLeft) != null && board.getPiece(takeLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                if (promotionIncoming) {
+                    for (int i = 0; i < 4; i++) {
                         movesList.add(new ChessMove(myPosition, takeLeft, promotions[i]));
                     }
-                }
-                else {
+                } else {
                     movesList.add(new ChessMove(myPosition, takeLeft, null));
                 }
             }
@@ -306,75 +304,28 @@ public class ChessPiece {
                 break;
             }
             ChessPosition takeRight = new ChessPosition(newRow, newestCol);
-            if(board.getPiece(takeRight) != null && board.getPiece(takeRight).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                if(promotionIncoming) {
-                    for(int i = 0; i < 4; i++) {
+            if (board.getPiece(takeRight) != null && board.getPiece(takeRight).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                if (promotionIncoming) {
+                    for (int i = 0; i < 4; i++) {
                         movesList.add(new ChessMove(myPosition, takeRight, promotions[i]));
                     }
-                }
-                else {
+                } else {
                     movesList.add(new ChessMove(myPosition, takeRight, null));
                 }
             }
-            if(hasMoved || board.getPiece(oneHop) != null) { //Checks for if we've moved OR if our front is blocked
-               hop = true;
+            if (!hasMoved && board.getPiece(oneHop) == null) {
+                int newerRow = newRow + teamMod;
+                if (newerRow <= 0 || newerRow > board.getRowBounds()) {
+                    break;
+                }
+                ChessPosition twoHop = new ChessPosition(newerRow, newCol);
+                if (board.getPiece(twoHop) == null) {
+                    movesList.add(new ChessMove(myPosition, twoHop, null));
+                }
             }
-            hasMoved = true;
+
+            hop = true;
         }
         return movesList;
-//        while(!hop) {
-//            ChessPosition leftDiagonal = new ChessPosition(newRow + teamMod, newCol - 1);
-//            ChessPosition rightDiagonal = new ChessPosition(newRow + teamMod, newCol + 1);
-//            if (board.getPiece(leftDiagonal) != null && board.getPiece(leftDiagonal).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-//                if (promotionIncoming) {
-//                    for (int i = 0; i < 4; i++) {
-//                        movesList.add(new ChessMove(myPosition, leftDiagonal, promotions[i]));
-//                    }
-//                } else {
-//                    movesList.add(new ChessMove(myPosition, leftDiagonal, null));
-//                }
-//            }
-//            if (board.getPiece(rightDiagonal) != null && board.getPiece(rightDiagonal).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-//                if (promotionIncoming) {
-//                    for (int i = 0; i < 4; i++) {
-//                        movesList.add(new ChessMove(myPosition, rightDiagonal, promotions[i]));
-//                    }
-//                } else {
-//                    movesList.add(new ChessMove(myPosition, rightDiagonal, null));
-//                }
-//            }
-//            ChessPosition newPos = new ChessPosition(newRow + teamMod, newCol);
-//            if (board.getPiece(newPos) != null) {
-//                return movesList;
-//            } else {
-//                if (promotionIncoming) {
-//                    for (int i = 0; i < 4; i++) {
-//                        movesList.add(new ChessMove(myPosition, newPos, promotions[i]));
-//                    }
-//                } else {
-//                    movesList.add(new ChessMove(myPosition, newPos, null));
-//                }
-//            }
-//            ChessPosition newerPos = new ChessPosition(newRow + (2 * teamMod), newCol);
-//            if (board.getPiece(newerPos) != null) {
-//                return movesList;
-//            } else {
-//                if (!hasMoved) {
-//                    movesList.add(new ChessMove(myPosition, newPos, null));
-//                }
-//            }
-//            hop = true;
-//        }
     }
 }
-    //TODO: implement pawns
-    /*
-     * Pawns' movement is dependent on color, whether or not it has moved yet, and whether or not
-     * a piece is diagonal to it. It'll definitely have more complex logic behind it. Also,
-     * I'll likely need to add a boolean somewhere to check if a piece has moved before. That
-     * will help both with castling AND with pawn's unique double movement. Could also theoretically
-     * add a bool specifically for pawns' En Passant.
-     * And, of course, will need to implement promotion!
-     * Good luck tomorrow me, this will be a challenge!
-     */
-
