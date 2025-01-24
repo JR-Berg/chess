@@ -55,7 +55,18 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        //Start by adding the pawns. First loop is white, second is black.
+        for(int i = 1; i <= 8; i++) {
+            ChessPosition pawnLoc = new ChessPosition(2, i);
+            ChessPiece wPawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            addPiece(pawnLoc,wPawn);
+        }
+        for(int j = 1; j <= 8; j++) {
+            ChessPosition pawnLoc = new ChessPosition(7, j);
+            ChessPiece bPawn = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            addPiece(pawnLoc,bPawn);
+        }
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
