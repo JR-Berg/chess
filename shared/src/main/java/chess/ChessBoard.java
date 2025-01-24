@@ -66,7 +66,23 @@ public class ChessBoard {
             ChessPiece bPawn = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
             addPiece(pawnLoc,bPawn);
         }
-        //throw new RuntimeException("Not implemented");
+        //I'll use something similar to the movement vectors from ChessPiece's movement system
+        //to hopefully make this easier for me.
+        ChessPiece.PieceType [] soldiers = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK};
+        ChessGame.TeamColor [] color = {ChessGame.TeamColor.WHITE, ChessGame.TeamColor.BLACK};
+        /*
+        * Idea is as follows:
+        * Implement a nested for loop. The first loop only goes twice, and is to change between
+        * WHITE and BLACK. The second loop iterates 8 times, once for each piece to put down.
+         */
+        for(int c = 0; c < 2; c++){ //c stands for color
+            int rowPosition = (c*7) + 1; //1 for while, 8 for black
+            for(int s = 0; s < 8; s++){ //s stands for soldier
+                ChessPosition ourPosition = new ChessPosition(rowPosition, s+1);
+                ChessPiece soldier = new ChessPiece(color[c], soldiers[s]);
+                addPiece(ourPosition, soldier);
+            }
+        }
     }
 
     /**
