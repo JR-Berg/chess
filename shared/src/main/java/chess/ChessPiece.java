@@ -72,10 +72,19 @@ public class ChessPiece {
         if(type == PieceType.BISHOP) {
             return bishopMoves(board, myPosition, movesList);
         }
+        if(type == PieceType.ROOK) {
+            return rookMoves(board, myPosition, movesList);
+        }
         //throw new RuntimeException("Not implemented");
         return new ArrayList<>();
     }
 
+    /*
+    * Below are the functions handling the logic of the movement of pieces. Keep in mind,
+    * the first function I worked on for movement was the Bishop, so all other functions are derived
+    * from Bishop's moveset. This may cause things to be less than optimized, or may be a source of
+    * glitches.
+     */
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList){
         /*I want to implement a set of values that can be used to track all possible directions
          * That this piece can move, so I am gonna make two arrays. One (directionRow) tracks the
@@ -97,7 +106,32 @@ public class ChessPiece {
                 if(newRow <= 0 || newRow > board.getRowBounds() || newCol <= 0 || newCol > board.getColumnBounds()){
                     break;
                 }
-                //System.out.printf("(" + newRow + "," + newCol + ")");
+                ChessPosition newPos = new ChessPosition(newRow, newCol);
+                if(board.getPiece(newPos) != null){
+                    if(board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                        movesList.add(new ChessMove(myPosition, newPos, null));
+                    }
+                    break;
+                }
+                movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
+            }
+        }
+        return movesList;
+    }
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList){
+        int[] directionRow = {1,-1,0,0};
+        int[] directionCol = {0,0,1,-1};
+
+        for (int i = 0; i < 4; i++){ //There are 4 ordered pairs of directions to move in
+            int newRow = myPosition.getRow();
+            int newCol = myPosition.getColumn();
+
+            while(true){
+                newRow += directionRow[i];
+                newCol += directionCol[i];
+                if(newRow <= 0 || newRow > board.getRowBounds() || newCol <= 0 || newCol > board.getColumnBounds()){
+                    break;
+                }
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 if(board.getPiece(newPos) != null){
                     if(board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
