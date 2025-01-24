@@ -266,7 +266,7 @@ public class ChessPiece {
             if(newRow + teamMod == 8) {
                 promotionIncoming = true;
             }
-            if(newRow != 1) {
+            if(newRow != 2) {
                 hasMoved = true;
             }
         }
@@ -284,16 +284,6 @@ public class ChessPiece {
                 }
                 else {
                     movesList.add(new ChessMove(myPosition, oneHop, null));
-                }
-            }
-            if(!hasMoved) {
-                int newerRow = newRow + teamMod;
-                if (newerRow <= 0 || newerRow > board.getRowBounds()) {
-                    break;
-                }
-                ChessPosition twoHop = new ChessPosition(newerRow, newCol);
-                if (board.getPiece(twoHop) == null) {
-                    movesList.add(new ChessMove(myPosition, twoHop, null));
                 }
             }
             int newerCol = newCol - 1;
@@ -326,7 +316,10 @@ public class ChessPiece {
                     movesList.add(new ChessMove(myPosition, takeRight, null));
                 }
             }
-            hop = true;
+            if(hasMoved || board.getPiece(oneHop) != null) { //Checks for if we've moved OR if our front is blocked
+               hop = true;
+            }
+            hasMoved = true;
         }
         return movesList;
 //        while(!hop) {
