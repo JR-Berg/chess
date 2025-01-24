@@ -90,11 +90,17 @@ public class ChessPiece {
                     newRow += directionRow[i];
                     newCol += directionCol[i];
                     if(newRow <= 0 || newRow > board.getRowBounds() || newCol <= 0 || newCol > board.getColumnBounds()){
-                        break; //Maybe better to just implement break statements?
+                        break;
                     }
                     //TODO: Probably need to implement something in the case of taking pieces as well
-                    //System.out.printf("(" + newRow + "," + newCol + ")");
+                    System.out.printf("(" + newRow + "," + newCol + ")");
                     ChessPosition newPos = new ChessPosition(newRow, newCol);
+                    if(board.getPiece(newPos) != null){
+                        if(board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                            movesList.add(new ChessMove(myPosition, newPos, null));
+                        }
+                        break;
+                    }
                     movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
                 }
             }
