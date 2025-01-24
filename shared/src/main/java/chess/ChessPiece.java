@@ -81,9 +81,13 @@ public class ChessPiece {
         if(type == PieceType.KING) {
             return kingMoves(board, myPosition, movesList);
         }
+        if(type == PieceType.KNIGHT) {
+            return knightMoves(board, myPosition, movesList);
+        }
         //throw new RuntimeException("Not implemented");
         return new ArrayList<>();
     }
+
 
     /*
     * Below are the functions handling the logic of the movement of pieces. Keep in mind,
@@ -91,6 +95,8 @@ public class ChessPiece {
     * from Bishop's moveset. This may cause things to be less than optimized, or may be a source of
     * glitches.
      */
+
+
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList){
         /*I want to implement a set of values that can be used to track all possible directions
          * That this piece can move, so I am gonna make two arrays. One (directionRow) tracks the
@@ -199,6 +205,33 @@ public class ChessPiece {
                 }
                 movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
                 steppy = false;
+            }
+        }
+        return movesList;
+    }
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList){
+        int[] directionRow = {2,-2,2,-2,1,-1,1,-1};
+        int[] directionCol = {1,1,-1,-1,2,2,-2,-2};
+
+        for (int i = 0; i < 8; i++){ //There are 8 ordered pairs of directions to move in
+            int newRow = myPosition.getRow();
+            int newCol = myPosition.getColumn();
+            boolean hop = true;
+            while(hop){ //hop is set to become false. Much like the King, the knight can't keep moving in its directions.
+                newRow += directionRow[i];
+                newCol += directionCol[i];
+                if(newRow <= 0 || newRow > board.getRowBounds() || newCol <= 0 || newCol > board.getColumnBounds()){
+                    break;
+                }
+                ChessPosition newPos = new ChessPosition(newRow, newCol);
+                if(board.getPiece(newPos) != null){
+                    if(board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                        movesList.add(new ChessMove(myPosition, newPos, null));
+                    }
+                    break;
+                }
+                hop = false;
+                movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
             }
         }
         return movesList;
