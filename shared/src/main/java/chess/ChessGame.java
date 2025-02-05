@@ -70,8 +70,19 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
-        //throw new RuntimeException("Not implemented");
+        for(int i = 0; i < currentBoard.getRowBounds(); i++) {
+            for (int j = 0; j < currentBoard.getColumnBounds(); j++) {
+                ChessPosition coords = new ChessPosition(i, j);
+                if(currentBoard.getPiece(coords).getTeamColor() != teamColor) {
+                    ChessPiece watching = currentBoard.getPiece(coords); //Sometimes watching, Mike Wazowski
+                    watching.pieceMoves(currentBoard, coords);
+                    if(watching.hasCheck) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -101,8 +112,8 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for(int i = 0; i < currentBoard.getRowBounds(); i++) {
+            for(int j = 0; j < currentBoard.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
                 ChessPiece addPiece = new ChessPiece(board.getPiece(coords).getTeamColor(), board.getPiece(coords).getPieceType());
                 currentBoard.addPiece(coords, addPiece);
