@@ -15,6 +15,8 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
     private Boolean hasMoved = false;
+    public Boolean enPassant = false;
+    public Boolean hasCheck = false;
 
     @Override
     public boolean equals(Object o) {
@@ -126,6 +128,9 @@ public class ChessPiece {
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         movesList.add(new ChessMove(myPosition, newPos, null));
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) { //Adding this to all movement checks to be able to easily check if a piece's legal move list can take the enemy king.
+                            hasCheck = true;
+                        }
                     }
                     break;
                 }
@@ -153,6 +158,9 @@ public class ChessPiece {
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         movesList.add(new ChessMove(myPosition, newPos, null));
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                            hasCheck = true;
+                        }
                     }
                     break;
                 }
@@ -180,6 +188,9 @@ public class ChessPiece {
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         movesList.add(new ChessMove(myPosition, newPos, null));
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                            hasCheck = true;
+                        }
                     }
                     break;
                 }
@@ -208,6 +219,9 @@ public class ChessPiece {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         movesList.add(new ChessMove(myPosition, newPos, null));
                     }
+                    if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                        hasCheck = true;
+                    }// Realistically, should never happen. Put this code here in case test cases force me to identify that both kings are in check with each other.
                     break;
                 }
                 movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
@@ -235,6 +249,9 @@ public class ChessPiece {
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                         movesList.add(new ChessMove(myPosition, newPos, null));
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                            hasCheck = true;
+                        }
                     }
                     break;
                 }
@@ -298,6 +315,9 @@ public class ChessPiece {
                 } else {
                     movesList.add(new ChessMove(myPosition, takeLeft, null));
                 }
+                if(board.getPiece(takeLeft).getPieceType() == PieceType.KING) {
+                    hasCheck = true;
+                }
             }
             int newestCol = newCol + 1;
             if (newestCol <= 0 || newestCol > board.getRowBounds()) {
@@ -311,6 +331,9 @@ public class ChessPiece {
                     }
                 } else {
                     movesList.add(new ChessMove(myPosition, takeRight, null));
+                }
+                if(board.getPiece(takeRight).getPieceType() == PieceType.KING) {
+                    hasCheck = true;
                 }
             }
             if (!hasMoved && board.getPiece(oneHop) == null) {

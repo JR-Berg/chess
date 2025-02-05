@@ -9,16 +9,19 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    private ChessBoard currentBoard = new ChessBoard();
+    private TeamColor currentTurn;
     public ChessGame() {
-
+        this.currentBoard.resetBoard();
+        this.currentTurn = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return currentTurn;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -27,7 +30,8 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.currentTurn = team;
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -66,7 +70,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -96,7 +101,14 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                ChessPosition coords = new ChessPosition(i, j);
+                ChessPiece addPiece = new ChessPiece(board.getPiece(coords).getTeamColor(), board.getPiece(coords).getPieceType());
+                currentBoard.addPiece(coords, addPiece);
+            }
+        }
+        //throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -105,6 +117,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return currentBoard;
+        //throw new RuntimeException("Not implemented");
     }
 }
