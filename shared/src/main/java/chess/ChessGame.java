@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -50,7 +51,16 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> movesList = new ArrayList<>();
+        ChessPiece sometimesWatching = currentBoard.getPiece(startPosition);
+        if (sometimesWatching != null) {
+            movesList = sometimesWatching.pieceMoves(currentBoard, startPosition);
+        }
+        for(int i = 0; i < movesList.size(); i++) {
+            ChessBoard copyBoard = new ChessBoard(currentBoard);
+            copyBoard.
+        }
+        return movesList;
     }
 
     /**
@@ -70,10 +80,10 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        for(int i = 0; i < currentBoard.getRowBounds(); i++) {
-            for (int j = 0; j < currentBoard.getColumnBounds(); j++) {
+        for(int i = 1; i < currentBoard.getRowBounds(); i++) {
+            for (int j = 1; j < currentBoard.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
-                if(currentBoard.getPiece(coords).getTeamColor() != teamColor) {
+                if(currentBoard.getPiece(coords) != null && currentBoard.getPiece(coords).getTeamColor() != teamColor) {
                     ChessPiece watching = currentBoard.getPiece(coords); //Sometimes watching, Mike Wazowski
                     watching.pieceMoves(currentBoard, coords);
                     if(watching.hasCheck) {
@@ -103,6 +113,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if(!isInCheck(teamColor)) {
+            throw new RuntimeException("Not Implemented yet lol");
+        }
         throw new RuntimeException("Not implemented");
     }
 
@@ -112,11 +125,13 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        for(int i = 0; i < currentBoard.getRowBounds(); i++) {
-            for(int j = 0; j < currentBoard.getColumnBounds(); j++) {
+        for(int i = 1; i < currentBoard.getRowBounds(); i++) {
+            for(int j = 1; j < currentBoard.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
-                ChessPiece addPiece = new ChessPiece(board.getPiece(coords).getTeamColor(), board.getPiece(coords).getPieceType());
-                currentBoard.addPiece(coords, addPiece);
+                if(board.getPiece(coords) != null) {
+                    ChessPiece addPiece = new ChessPiece(board.getPiece(coords).getTeamColor(), board.getPiece(coords).getPieceType());
+                    currentBoard.addPiece(coords, addPiece);
+                }
             }
         }
         //throw new RuntimeException("Not implemented");
