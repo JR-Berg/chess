@@ -117,7 +117,7 @@ public class ChessGame {
             for(int i = 1; i <= currentBoard.getRowBounds(); i++){
                 for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
                     ChessPosition spotlight = new ChessPosition(i, j);
-                    if(teamColor == currentBoard.getPiece(spotlight).getTeamColor()) {
+                    if(currentBoard.getPiece(spotlight) != null &&  teamColor == currentBoard.getPiece(spotlight).getTeamColor()) {
                         Collection<ChessMove> possibleMoves = validMoves(spotlight);
                         if(!possibleMoves.isEmpty()) {
                             return false;
@@ -142,7 +142,7 @@ public class ChessGame {
             for(int i = 1; i <= currentBoard.getRowBounds(); i++){
                 for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
                     ChessPosition spotlight = new ChessPosition(i, j);
-                    if(currentBoard.getPiece(spotlight).getTeamColor() == teamColor) {
+                    if(currentBoard.getPiece(spotlight) != null && currentBoard.getPiece(spotlight).getTeamColor() == teamColor) {
                         Collection<ChessMove> possibleMoves = validMoves(spotlight);
                         if(!possibleMoves.isEmpty()) {
                             return false;
