@@ -86,6 +86,9 @@ public class ChessGame {
             currentBoard.addPiece(pastPosition, null);
             currentBoard.getPiece(presentPosition).hasMoved = true;
         }
+        else {
+            throw new InvalidMoveException("Move is Invalid!");
+        }
     }
 
     /**
