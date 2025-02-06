@@ -15,8 +15,8 @@ public class ChessBoard {
 
     }
     public ChessBoard(ChessBoard board) {
-        for(int i = 1; i < board.getRowBounds(); i++) {
-            for(int j = 1; j < board.getColumnBounds(); j++) {
+        for(int i = 1; i <= board.getRowBounds(); i++) {
+            for(int j = 1; j <= board.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i,j);
                 squares[i-1][j-1] = board.getPiece(coords);
             }
