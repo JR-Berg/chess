@@ -18,7 +18,7 @@ public class ChessBoard {
         for(int i = 1; i < board.getRowBounds(); i++) {
             for(int j = 1; j < board.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i,j);
-                squares[i][j] = board.getPiece(coords);
+                squares[i-1][j-1] = board.getPiece(coords);
             }
         }
     }
@@ -64,7 +64,7 @@ public class ChessBoard {
     public void nukePiece(ChessPosition position) {
         int pieceRow = position.getRow();
         int pieceCol = position.getColumn();
-        squares[pieceRow][pieceCol] = null;
+        squares[pieceRow-1][pieceCol-1] = null;
     }
 
     /**

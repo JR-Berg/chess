@@ -84,8 +84,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        for(int i = 1; i < currentBoard.getRowBounds(); i++) {
-            for (int j = 1; j < currentBoard.getColumnBounds(); j++) {
+        for(int i = 1; i <= currentBoard.getRowBounds(); i++) {
+            for (int j = 1; j <= currentBoard.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
                 if(currentBoard.getPiece(coords) != null && currentBoard.getPiece(coords).getTeamColor() != teamColor) {
                     ChessPiece watching = currentBoard.getPiece(coords); //Sometimes watching, Mike Wazowski
@@ -129,12 +129,15 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        for(int i = 1; i < currentBoard.getRowBounds(); i++) {
-            for(int j = 1; j < currentBoard.getColumnBounds(); j++) {
+        for(int i = 1; i <= currentBoard.getRowBounds(); i++) {
+            for(int j = 1; j <= currentBoard.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
                 if(board.getPiece(coords) != null) {
                     ChessPiece addPiece = new ChessPiece(board.getPiece(coords).getTeamColor(), board.getPiece(coords).getPieceType());
                     currentBoard.addPiece(coords, addPiece);
+                }
+                else {
+                    currentBoard.addPiece(coords, null);
                 }
             }
         }
@@ -159,17 +162,14 @@ public class ChessGame {
     private ChessBoard testMove(ChessBoard board, ChessPosition pastPos, ChessPosition newPos) {
         ChessBoard newBoard = new ChessBoard(board);
         ChessPiece ourPiece = new ChessPiece(board.getPiece(pastPos).getTeamColor(), board.getPiece(pastPos).getPieceType());
-        if(newPos != null) {
-            newBoard.nukePiece(newPos);
-        }
         newBoard.addPiece(newPos, ourPiece);
-        newBoard.nukePiece(pastPos);
+        newBoard.addPiece(pastPos, null);
         return newBoard;
     }
 
     public boolean testCheck(TeamColor teamColor, ChessBoard board) {
-        for(int i = 1; i < board.getRowBounds(); i++) {
-            for (int j = 1; j < board.getColumnBounds(); j++) {
+        for(int i = 1; i <= board.getRowBounds(); i++) {
+            for (int j = 1; j <= board.getColumnBounds(); j++) {
                 ChessPosition coords = new ChessPosition(i, j);
                 if(board.getPiece(coords) != null && board.getPiece(coords).getTeamColor() != teamColor) {
                     ChessPiece watching = board.getPiece(coords); //Sometimes watching, Mike Wazowski
