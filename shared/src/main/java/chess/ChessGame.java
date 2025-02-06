@@ -77,12 +77,15 @@ public class ChessGame {
         ChessPosition pastPosition = move.getStartPosition();
         ChessPosition presentPosition = move.getEndPosition();
         ChessPiece ourPiece = currentBoard.getPiece(pastPosition);
-        if(move.getPromotionPiece() != null) {
-            ourPiece = new ChessPiece(ourPiece.getTeamColor(), move.getPromotionPiece());
+        Collection<ChessMove> validMoves = validMoves(pastPosition);
+        if(validMoves.contains(move)) {
+            if (move.getPromotionPiece() != null) {
+                ourPiece = new ChessPiece(ourPiece.getTeamColor(), move.getPromotionPiece());
+            }
+            currentBoard.addPiece(presentPosition, ourPiece);
+            currentBoard.addPiece(pastPosition, null);
+            currentBoard.getPiece(presentPosition).hasMoved = true;
         }
-        currentBoard.addPiece(presentPosition, ourPiece);
-        currentBoard.addPiece(pastPosition, null);
-        currentBoard.getPiece(presentPosition).hasMoved = true;
     }
 
     /**
