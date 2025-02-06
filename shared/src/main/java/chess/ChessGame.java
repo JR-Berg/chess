@@ -56,11 +56,15 @@ public class ChessGame {
         if (sometimesWatching != null) {
             movesList = sometimesWatching.pieceMoves(currentBoard, startPosition);
         }
+        Collection<ChessMove> validMovesList = new ArrayList<>();
         for(int i = 0; i < movesList.size(); i++) {
-            ChessBoard copyBoard = new ChessBoard(currentBoard);
-            //TODO implement
+            ChessMove ourMove = ((ArrayList<ChessMove>)movesList).get(i);
+            ChessBoard newBoard = testMove(currentBoard, ourMove.getStartPosition(), ourMove.getEndPosition());
+            if(!testCheck(currentBoard.getPiece(startPosition).getTeamColor(), newBoard)){
+                validMovesList.add(ourMove);
+            }
         }
-        return movesList;
+        return validMovesList;
     }
 
     /**
@@ -159,6 +163,23 @@ public class ChessGame {
             newBoard.nukePiece(newPos);
         }
         newBoard.addPiece(newPos, ourPiece);
+        newBoard.nukePiece(pastPos);
+        return newBoard;
+    }
 
+    public boolean testCheck(TeamColor teamColor, ChessBoard board) {
+        for(int i = 1; i < board.getRowBounds(); i++) {
+            for (int j = 1; j < board.getColumnBounds(); j++) {
+                ChessPosition coords = new ChessPosition(i, j);
+                if(board.getPiece(coords) != null && board.getPiece(coords).getTeamColor() != teamColor) {
+                    ChessPiece watching = board.getPiece(coords); //Sometimes watching, Mike Wazowski
+                    watching.pieceMoves(board, coords);
+                    if(watching.hasCheck) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
