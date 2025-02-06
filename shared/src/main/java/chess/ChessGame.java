@@ -110,9 +110,11 @@ public class ChessGame {
             for(int i = 1; i <= currentBoard.getRowBounds(); i++){
                 for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
                     ChessPosition spotlight = new ChessPosition(i, j);
-                    Collection<ChessMove> possibleMoves = validMoves(spotlight);
-                    if(!possibleMoves.isEmpty()) {
-                        return false;
+                    if(teamColor == currentBoard.getPiece(spotlight).getTeamColor()) {
+                        Collection<ChessMove> possibleMoves = validMoves(spotlight);
+                        if(!possibleMoves.isEmpty()) {
+                            return false;
+                        }
                     }
                 }
             }
@@ -129,10 +131,21 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if(!isInCheck(teamColor)) {
-            throw new RuntimeException("Not Implemented yet lol");
+        if(!isInCheck(teamColor)){
+            for(int i = 1; i <= currentBoard.getRowBounds(); i++){
+                for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
+                    ChessPosition spotlight = new ChessPosition(i, j);
+                    if(currentBoard.getPiece(spotlight).getTeamColor() == teamColor) {
+                        Collection<ChessMove> possibleMoves = validMoves(spotlight);
+                        if(!possibleMoves.isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
-        throw new RuntimeException("Not implemented");
+        return false;
     }
 
     /**
