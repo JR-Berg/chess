@@ -58,7 +58,7 @@ public class ChessGame {
         }
         for(int i = 0; i < movesList.size(); i++) {
             ChessBoard copyBoard = new ChessBoard(currentBoard);
-            copyBoard.
+            //TODO implement
         }
         return movesList;
     }
@@ -145,5 +145,20 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return currentBoard;
         //throw new RuntimeException("Not implemented");
+    }
+
+    /*
+    testMove is a helper function designed for validMoves.
+    It takes a ChessBoard, the position on that board that the piece we want to move is, and the position on the board that we're moving that piece to.
+    It returns a ChessBoard that has our piece moved to its new location.
+     */
+    private ChessBoard testMove(ChessBoard board, ChessPosition pastPos, ChessPosition newPos) {
+        ChessBoard newBoard = new ChessBoard(board);
+        ChessPiece ourPiece = new ChessPiece(board.getPiece(pastPos).getTeamColor(), board.getPiece(pastPos).getPieceType());
+        if(newPos != null) {
+            newBoard.nukePiece(newPos);
+        }
+        newBoard.addPiece(newPos, ourPiece);
+
     }
 }

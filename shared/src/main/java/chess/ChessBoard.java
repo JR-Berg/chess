@@ -58,6 +58,15 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
+    /*
+    Deletes a piece given its position.
+     */
+    public void nukePiece(ChessPosition position) {
+        int pieceRow = position.getRow();
+        int pieceCol = position.getColumn();
+        squares[pieceRow][pieceCol] = null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
