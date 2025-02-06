@@ -82,6 +82,7 @@ public class ChessGame {
         }
         currentBoard.addPiece(presentPosition, ourPiece);
         currentBoard.addPiece(pastPosition, null);
+        currentBoard.getPiece(presentPosition).hasMoved = true;
     }
 
     /**

@@ -14,8 +14,7 @@ public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
-    private Boolean hasMoved = false;
-    public Boolean enPassant = false;
+    public Boolean hasMoved = false;
     public Boolean hasCheck = false;
 
     @Override
