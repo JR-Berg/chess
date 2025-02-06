@@ -78,13 +78,19 @@ public class ChessGame {
         ChessPosition presentPosition = move.getEndPosition();
         ChessPiece ourPiece = currentBoard.getPiece(pastPosition);
         Collection<ChessMove> validMoves = validMoves(pastPosition);
-        if(validMoves.contains(move)) {
+        if(validMoves.contains(move) && ourPiece.getTeamColor() == currentTurn) {
             if (move.getPromotionPiece() != null) {
                 ourPiece = new ChessPiece(ourPiece.getTeamColor(), move.getPromotionPiece());
             }
             currentBoard.addPiece(presentPosition, ourPiece);
             currentBoard.addPiece(pastPosition, null);
             currentBoard.getPiece(presentPosition).hasMoved = true;
+            if(ourPiece.getTeamColor() == TeamColor.WHITE) {
+                currentTurn = TeamColor.BLACK;
+            }
+            else {
+                currentTurn = TeamColor.WHITE;
+            }
         }
         else {
             throw new InvalidMoveException("Move is Invalid!");
