@@ -7,7 +7,9 @@ import dataaccess.MemoryUserDataAccess;
 import dataaccess.NonSuccessException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import request.LoginRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 import result.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +42,7 @@ public class UnitTests {
         try {
             userServices.register(request3);
             fail("Expected NonSuccessException to be thrown");
-        } catch (NonSuccessException e) {
+        } catch (NonSuccessException e) { //TODO: Replace this error with proper error
             assertEquals("Username Taken!", e.getMessage());
         }
     }
@@ -63,5 +65,29 @@ public class UnitTests {
 
         assertNotNull(result3);
 
+    }
+
+    @Test
+    public void testLogin() {
+        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        RegisterResult result2 = userServices.register(request2);
+
+        assertNotNull(result);
+        assertNotNull(result2);
+
+        LoginRequest lRequest = new LoginRequest("testuser", "password");
+        LoginRequest lRequest2 = new LoginRequest("test2user", "wrongPassword");
+        LoginResult lResult = userServices.login(lRequest);
+
+        assertNotNull(lResult);
+
+        try {
+            userServices.login(lRequest2);
+            fail("Expected NonSuccessException to be thrown");
+        } catch (NonSuccessException e) { //TODO: Replace this error with proper error
+            assertEquals("Incorrect Password!", e.getMessage());
+        }
     }
 }

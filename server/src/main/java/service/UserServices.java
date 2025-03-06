@@ -3,7 +3,9 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
+import request.LoginRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 import result.RegisterResult;
 
 public class UserServices {
@@ -31,5 +33,20 @@ public class UserServices {
         authDataAccess.clearAll();
         gameDataAccess.clearAll();
         return "";
+    }
+
+    public LoginResult login(LoginRequest loginRequest) {
+        UserData user = userDataAccess.getUser(loginRequest.username());
+        if(user == null){
+            throw new NonSuccessException("Username does not exist!"); //TODO: Make better error
+        }
+        Boolean correctPassword = userDataAccess.checkPassword(loginRequest.username(), loginRequest.password());
+        if(correctPassword){
+            AuthData auth = authDataAccess.createAuth(user.username());
+            return new LoginResult(user.username(), auth.authToken());
+        }
+        else{
+            throw new NonSuccessException("Incorrect password!"); //TODO: Make better error.
+        }
     }
 }

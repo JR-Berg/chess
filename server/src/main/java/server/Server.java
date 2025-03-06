@@ -28,6 +28,12 @@ public class Server {
         Spark.delete("/db", (req, res) -> {
             return clearApplication(userHandler);
         });
+        Spark.post("/session", (req, res) -> {
+            return loginUser(req.body(), userHandler);
+        });
+        Spark.delete("/session", (req, res) -> {
+            return logoutUser(req.body(), userHandler);
+        });
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -46,5 +52,11 @@ public class Server {
     private String clearApplication(UserHandler userHandler) {
         userHandler.clearApplication();
         return "";
+    }
+    private String loginUser(String requestBody, UserHandler userHandler) {
+        return userHandler.loginUser(requestBody);
+    }
+    private String logoutUser(String requestBody, UserHandler userHandler) {
+        return userHandler.logoutUser(requestBody);
     }
 }

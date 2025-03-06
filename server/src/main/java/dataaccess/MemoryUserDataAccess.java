@@ -2,6 +2,7 @@ package dataaccess;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import dataaccess.NonSuccessException;
@@ -36,4 +37,10 @@ public class MemoryUserDataAccess extends UserDataAccess {
         usersDB.clear();
         return "";
     }
+
+    @Override
+    public Boolean checkPassword(String username, String password) {
+        return (Objects.equals(usersDB.get(username).password(), password));
+    }
+
 }

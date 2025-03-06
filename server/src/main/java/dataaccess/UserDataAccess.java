@@ -7,4 +7,6 @@ public abstract class UserDataAccess {
 
     public abstract UserData getUser(String username);
     public abstract String clearAll();
+
+    public abstract Boolean checkPassword(String username, String password);
 }

@@ -2,7 +2,9 @@ package handler;
 
 import com.google.gson.Gson;
 import model.UserData;
+import request.LoginRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 import result.RegisterResult;
 import service.UserServices;
 
@@ -21,5 +23,14 @@ public class UserHandler {
     public String clearApplication() {
         userServices.clearAll();
         return "";
+    }
+    public String loginUser(String requestBody) {
+        LoginRequest loginRequest = serializer.fromJson(requestBody, request.LoginRequest.class);
+        LoginResult registerResult = userServices.login(loginRequest);
+        return serializer.toJson(registerResult);
+    }
+
+    public String logoutUser(String requestBody) {
+        LogoutRequest logoutRequest = serializer.fromJson(requestBody, request.LogoutRequest.class);
     }
 }
