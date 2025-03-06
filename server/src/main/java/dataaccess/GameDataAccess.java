@@ -1,4 +1,5 @@
 package dataaccess;
 
-public class GameDataAccess {
+public abstract class GameDataAccess {
+    public abstract String clearAll();
 }

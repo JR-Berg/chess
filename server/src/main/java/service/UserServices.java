@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDataAccess;
-import dataaccess.DataAccessException;
-import dataaccess.NonSuccessException;
-import dataaccess.UserDataAccess;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import request.RegisterRequest;
@@ -12,9 +9,11 @@ import result.RegisterResult;
 public class UserServices {
     private UserDataAccess userDataAccess;
     private AuthDataAccess authDataAccess;
-    public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess) {
+    private GameDataAccess gameDataAccess;
+    public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
+        this.gameDataAccess = gameDataAccess;
     }
 
     public RegisterResult register(RegisterRequest registerRequest) {
@@ -31,5 +30,6 @@ public class UserServices {
         userDataAccess.clearAll();
         authDataAccess.clearAll();
         gameDataAccess.clearAll();
+        return "";
     }
 }

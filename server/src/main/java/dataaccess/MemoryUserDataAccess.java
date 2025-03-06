@@ -31,4 +31,9 @@ public class MemoryUserDataAccess extends UserDataAccess {
     public UserData getUser(String username) {
         return usersDB.get(username);
     }
+
+    public String clearAll() {
+        usersDB.clear();
+        return "";
+    }
 }

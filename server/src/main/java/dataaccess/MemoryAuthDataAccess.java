@@ -27,4 +27,9 @@ public class MemoryAuthDataAccess extends AuthDataAccess{
     public void deleteAuth(String authToken) {
         authsDB.remove(authToken);
     }
+
+    public String clearAll() {
+        authsDB.clear();
+        return "";
+    }
 }
