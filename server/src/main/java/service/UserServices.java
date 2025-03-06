@@ -4,8 +4,10 @@ import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserServices {
@@ -48,5 +50,10 @@ public class UserServices {
         else{
             throw new NonSuccessException("Incorrect password!"); //TODO: Make better error.
         }
+    }
+
+    public LogoutResult logout(LogoutRequest logoutRequest) {
+        AuthData auth = authDataAccess.getAuth(logoutRequest.authToken());
+        return new LogoutResult(authDataAccess.deleteAuth(auth.authToken()));
     }
 }

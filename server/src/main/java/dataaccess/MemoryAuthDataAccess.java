@@ -10,8 +10,8 @@ public class MemoryAuthDataAccess extends AuthDataAccess{
 
     private final HashMap<String, AuthData> authsDB = new HashMap<>();
     @Override
-    public Boolean getAuth(String authToken) {
-        return authsDB.containsKey(authToken);
+    public AuthData getAuth(String authToken) {
+        return authsDB.get(authToken);
     }
 
     @Override
@@ -24,8 +24,9 @@ public class MemoryAuthDataAccess extends AuthDataAccess{
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public String deleteAuth(String authToken) {
         authsDB.remove(authToken);
+        return "successfully deleted";
     }
 
     public String clearAll() {

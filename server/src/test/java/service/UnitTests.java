@@ -8,8 +8,10 @@ import dataaccess.NonSuccessException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -87,7 +89,32 @@ public class UnitTests {
             userServices.login(lRequest2);
             fail("Expected NonSuccessException to be thrown");
         } catch (NonSuccessException e) { //TODO: Replace this error with proper error
-            assertEquals("Incorrect Password!", e.getMessage());
+            assertEquals("Incorrect password!", e.getMessage());
         }
+    }
+
+    @Test
+    public void testLogout() {
+        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        RegisterResult result2 = userServices.register(request2);
+
+        assertNotNull(result);
+        assertNotNull(result2);
+
+        LoginRequest lRequest = new LoginRequest("testuser", "password");
+        LoginRequest lRequest2 = new LoginRequest("test2user", "password");
+        LoginResult lResult = userServices.login(lRequest);
+        LoginResult lResult2 = userServices.login(lRequest2);
+
+        assertNotNull(lResult);
+        assertNotNull(lResult2);
+
+        String authToken = lResult.authToken();
+        LogoutRequest loutRequest = new LogoutRequest(authToken);
+        LogoutResult loutResult = userServices.logout(loutRequest);
+
+        assertNotNull(loutResult);
     }
 }
