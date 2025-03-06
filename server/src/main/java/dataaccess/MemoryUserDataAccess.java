@@ -23,13 +23,9 @@ public class MemoryUserDataAccess extends UserDataAccess {
         if (usernameExists(username)) {
             throw new NonSuccessException("User already exists!"); //TODO: Better error
         }
-        String authToken = createAuth();
         UserData user = new UserData(username, password, email);
         usersDB.put(username, user);
         return getUser(username);
-    }
-    public String createAuth() {
-        return UUID.randomUUID().toString();
     }
     // Method to retrieve a user by username
     public UserData getUser(String username) {
