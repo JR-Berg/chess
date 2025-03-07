@@ -8,8 +8,10 @@ import dataaccess.UserDataAccess;
 import model.AuthData;
 import model.GameData;
 import request.CreateGameRequest;
+import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.CreateGameResult;
+import result.JoinGameResult;
 import result.ListGamesResult;
 
 import java.util.Map;
@@ -42,6 +44,16 @@ public class GameServices {
         gameDataAccess.createGame(newGameID, newGame);
         return new CreateGameResult(newGameID, true);
     }
+    public JoinGameResult joinGame(JoinGameRequest joinGameRequest) {
+        AuthData auth = checkAuth(joinGameRequest.authToken());
+        Integer gameID = joinGameRequest.gameID();
+        GameData gameData = gameDataAccess.getGame(gameID);
+        if(gameData == null){
+            throw new NonSuccessException("gameID invalid!"); //TODO: make better error
+        }
+        gameDataAccess.setPlayerTeam(gameID, auth.username(), joinGameRequest.playerColor());
+        return new JoinGameResult(true);
+    }
 
     private AuthData checkAuth(String authToken){
         AuthData auth = authDataAccess.getAuth(authToken);
@@ -50,4 +62,6 @@ public class GameServices {
         }
         return auth;
     }
+
+
 }

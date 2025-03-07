@@ -2,6 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import request.CreateGameRequest;
+import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.ListGamesResult;
 import service.GameServices;
@@ -28,6 +29,7 @@ public class GameHandler {
 
     public String joinGame(String requestHeader, String requestBody) {
         String authToken = requestHeader;
-        JoinGameRequest
+        JoinGameRequest joinGameRequest = serializer.fromJson(requestBody, JoinGameRequest.class);
+        return serializer.toJson(gameServices.joinGame(joinGameRequest));
     }
 }
