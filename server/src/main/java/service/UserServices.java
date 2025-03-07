@@ -7,7 +7,6 @@ import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
 import result.LoginResult;
-import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserServices {
@@ -52,8 +51,8 @@ public class UserServices {
         }
     }
 
-    public LogoutResult logout(LogoutRequest logoutRequest) {
+    public void logout(LogoutRequest logoutRequest) {
         AuthData auth = authDataAccess.getAuth(logoutRequest.authToken());
-        return new LogoutResult(authDataAccess.deleteAuth(auth.authToken()));
+        authDataAccess.deleteAuth(auth.authToken());
     }
 }

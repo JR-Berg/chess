@@ -11,7 +11,6 @@ import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
 import result.LoginResult;
-import result.LogoutResult;
 import result.RegisterResult;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -113,8 +112,6 @@ public class UnitTests {
 
         String authToken = lResult.authToken();
         LogoutRequest loutRequest = new LogoutRequest(authToken);
-        LogoutResult loutResult = userServices.logout(loutRequest);
-
-        assertNotNull(loutResult);
+        userServices.logout(loutRequest);
     }
 }

@@ -32,7 +32,10 @@ public class Server {
             return loginUser(req.body(), userHandler);
         });
         Spark.delete("/session", (req, res) -> {
-            return logoutUser(req.body(), userHandler);
+            return logoutUser(req.headers("authorization"), userHandler);
+        });
+        Spark.get("/game", (req, res) -> {
+            return listGames(req.headers("authorization"), gameHandler);
         });
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -56,7 +59,8 @@ public class Server {
     private String loginUser(String requestBody, UserHandler userHandler) {
         return userHandler.loginUser(requestBody);
     }
-    private String logoutUser(String requestBody, UserHandler userHandler) {
-        return userHandler.logoutUser(requestBody);
+    private String logoutUser(String requestHeader, UserHandler userHandler) {
+        userHandler.logoutUser(requestHeader);
+        return "";
     }
 }
