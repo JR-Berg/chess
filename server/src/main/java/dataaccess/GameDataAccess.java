@@ -11,4 +11,6 @@ public abstract class GameDataAccess {
     public abstract Map<Integer, GameData> listGames();
 
     public abstract Integer generateGameID();
+
+    public abstract void createGame(Integer newGameID, GameData newGame);
 }

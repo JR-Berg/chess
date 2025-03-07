@@ -25,4 +25,9 @@ public class GameHandler {
         CreateGameRequest createGameRequest = new CreateGameRequest(authToken, emptyGameRequest.gameName());
         return serializer.toJson(gameServices.createGame(createGameRequest));
     }
+
+    public String joinGame(String requestHeader, String requestBody) {
+        String authToken = requestHeader;
+        JoinGameRequest
+    }
 }

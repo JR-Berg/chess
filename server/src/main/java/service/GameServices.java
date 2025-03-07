@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AuthDataAccess;
 import dataaccess.GameDataAccess;
 import dataaccess.NonSuccessException;
@@ -36,11 +37,14 @@ public class GameServices {
             throw new NonSuccessException("gameName already exists!"); //TODO: make better error
         }
         Integer newGameID = gameDataAccess.generateGameID();
-        GameData newGame = new GameData(newGameID, createGameRequest.gameName(),);
+        ChessGame chessGame = new ChessGame();
+        GameData newGame = new GameData(newGameID,"","", createGameRequest.gameName(), chessGame);
+        gameDataAccess.createGame(newGameID, newGame);
+        return new CreateGameResult(newGameID, true);
     }
 
     private AuthData checkAuth(String authToken){
-        AuthData auth = authDataAccess.getAuth(listGamesRequest.authToken());
+        AuthData auth = authDataAccess.getAuth(authToken);
         if(auth == null) {
             throw new NonSuccessException("AuthData invalid!"); //TODO: Make better error
         }

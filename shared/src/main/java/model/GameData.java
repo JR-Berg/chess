@@ -5,5 +5,5 @@ public record GameData(
         String whiteUsername,
         String blackUsername,
         String gameName,
-        ChessGame game) {
+        chess.ChessGame game) {
 }

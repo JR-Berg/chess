@@ -44,6 +44,9 @@ public class Server {
         Spark.post("/game", (req, res) -> {
             return createGame(req.headers("authorization"), req.body(), gameHandler);
         });
+        Spark.put("/game", (req, res) -> {
+            return joinGame(req.headers("authorization"), req.body(), gameHandler);
+        });
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
@@ -75,5 +78,8 @@ public class Server {
     }
     private String createGame(String requestHeader, String requestBody, GameHandler gameHandler) {
         return gameHandler.createGame(requestHeader, requestBody);
+    }
+    private String joinGame(String requestHeader, String requestBody, GameHandler gameHandler){
+        return gameHandler.joinGame(requestHeader, requestBody);
     }
 }

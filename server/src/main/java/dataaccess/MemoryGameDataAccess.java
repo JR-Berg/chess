@@ -20,7 +20,12 @@ public class MemoryGameDataAccess extends GameDataAccess {
 
     @Override
     public Integer generateGameID() {
+        return gamesDB.size() + 1;
+    }
 
+    @Override
+    public void createGame(Integer newGameID, GameData newGame) {
+        gamesDB.put(newGameID, newGame);
     }
 
     public Integer getGameIDByName(String gameName) {
@@ -31,4 +36,5 @@ public class MemoryGameDataAccess extends GameDataAccess {
         }
         return null;  // Return null if no game with the given name was found
     }
+
 }
