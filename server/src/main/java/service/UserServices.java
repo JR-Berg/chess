@@ -53,6 +53,9 @@ public class UserServices {
 
     public void logout(LogoutRequest logoutRequest) {
         AuthData auth = authDataAccess.getAuth(logoutRequest.authToken());
+        if(auth == null){
+            throw new NonSuccessException("Invalid AuthData"); //TODO: Make better error.
+        }
         authDataAccess.deleteAuth(auth.authToken());
     }
 }

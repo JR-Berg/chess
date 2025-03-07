@@ -4,19 +4,23 @@ import com.google.gson.Gson;
 import dataaccess.AuthDataAccess;
 import dataaccess.GameDataAccess;
 import dataaccess.UserDataAccess;
+import handler.GameHandler;
 import handler.UserHandler;
 import model.UserData;
+import service.GameServices;
 import service.UserServices;
 import spark.*;
 
 public class Server {
-    //private UserHandler userHandler;
+    //TODO: Go through and add Success Booleans to all of the objects in request and results.
     public int run(int desiredPort) {
         UserDataAccess userDataAccess = new dataaccess.MemoryUserDataAccess();
         AuthDataAccess userAuthAccess = new dataaccess.MemoryAuthDataAccess();
         GameDataAccess gameDataAccess = new dataaccess.MemoryGameDataAccess();
         UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
         UserHandler userHandler = new UserHandler(userServices);
+        GameServices gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
+        GameHandler gameHandler = new GameHandler(gameServices);
 
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
@@ -62,5 +66,8 @@ public class Server {
     private String logoutUser(String requestHeader, UserHandler userHandler) {
         userHandler.logoutUser(requestHeader);
         return "";
+    }
+    private String listGames(String requestHeader, GameHandler gameHandler) {
+        return gameHandler.listGames(requestHeader);
     }
 }
