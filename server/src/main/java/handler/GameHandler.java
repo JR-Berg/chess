@@ -29,7 +29,8 @@ public class GameHandler {
 
     public String joinGame(String requestHeader, String requestBody) {
         String authToken = requestHeader;
-        JoinGameRequest joinGameRequest = serializer.fromJson(requestBody, JoinGameRequest.class);
+        JoinGameRequest partialRequest = serializer.fromJson(requestBody, JoinGameRequest.class);
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, partialRequest.playerColor(), partialRequest.gameID());
         return serializer.toJson(gameServices.joinGame(joinGameRequest));
     }
 }
