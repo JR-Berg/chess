@@ -10,6 +10,7 @@ import result.LoginResult;
 import result.RegisterResult;
 
 public class UserServices {
+    //TODO: Make checking auth its own function probably
     private UserDataAccess userDataAccess;
     private AuthDataAccess authDataAccess;
     private GameDataAccess gameDataAccess;
