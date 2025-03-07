@@ -1,9 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.AuthDataAccess;
-import dataaccess.GameDataAccess;
-import dataaccess.UserDataAccess;
+import dataaccess.*;
 import handler.GameHandler;
 import handler.UserHandler;
 import model.UserData;
@@ -11,12 +9,14 @@ import service.GameServices;
 import service.UserServices;
 import spark.*;
 
+import static spark.Spark.halt;
+
 public class Server {
     //TODO: Go through and add Success Booleans to all of the objects in request and results.
     public int run(int desiredPort) {
-        UserDataAccess userDataAccess = new dataaccess.MemoryUserDataAccess();
-        AuthDataAccess userAuthAccess = new dataaccess.MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new dataaccess.MemoryGameDataAccess();
+        UserDataAccess userDataAccess = new MemoryUserDataAccess();
+        AuthDataAccess userAuthAccess = new MemoryAuthDataAccess();
+        GameDataAccess gameDataAccess = new MemoryGameDataAccess();
         UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
         UserHandler userHandler = new UserHandler(userServices);
         GameServices gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
@@ -27,7 +27,13 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", (req, res) -> {
-            return registerUser(req.body(), userHandler);
+            String ret = "";
+            try {
+                ret = registerUser(req.body(), userHandler);
+            } catch(NonSuccessException e){ //TODO: Add error
+                halt(403, "{ \"message\": \"Error: already taken\" }");
+            }
+            return ret;
         });
         Spark.delete("/db", (req, res) -> {
             return clearApplication(userHandler);
