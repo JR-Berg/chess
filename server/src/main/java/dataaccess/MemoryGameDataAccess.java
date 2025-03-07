@@ -40,9 +40,15 @@ public class MemoryGameDataAccess extends GameDataAccess {
         GameData gameData = gamesDB.get(gameID);
         GameData newGameData;
         if(Objects.equals(teamColor, "WHITE")) {
+            if(!Objects.equals(gameData.whiteUsername(), "")) {
+                throw new NonSuccessException("Team already taken!"); //TODO: Make better error
+            }
             newGameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName(), gameData.game());
         }
         else {
+            if(!Objects.equals(gameData.blackUsername(), "")) {
+                throw new NonSuccessException("Team already taken!"); //TODO: Make better error
+            }
             newGameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         }
         gamesDB.put(gameID, newGameData);
