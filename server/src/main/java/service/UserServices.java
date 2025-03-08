@@ -21,6 +21,9 @@ public class UserServices {
     }
 
     public RegisterResult register(RegisterRequest registerRequest) {
+        if(registerRequest.username() == null || registerRequest.email() == null || registerRequest.password() == null) {
+            throw new BadDataException("Invalid input");
+        }
         UserData user = userDataAccess.getUser(registerRequest.username());
         if(user != null){
             throw new NonSuccessException("Username Taken!"); //TODO: Make better error

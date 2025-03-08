@@ -26,20 +26,39 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+
+        //Register function
         Spark.post("/user", (req, res) -> {
             String ret = "";
             try {
                 ret = registerUser(req.body(), userHandler);
-            } catch(NonSuccessException e){ //TODO: Add error
+            } catch(NonSuccessException e){ //Error 403, username taken
                 halt(403, "{ \"message\": \"Error: already taken\" }");
+            } catch(BadDataException e) { //Error 400, bad request (for example, didn't input enough data)
+                halt(400, "{ \"message\": \"Error: bad request\" }");
             }
             return ret;
         });
+
+        //Clear Application
         Spark.delete("/db", (req, res) -> {
-            return clearApplication(userHandler);
+            String ret = "";
+            try {
+                ret = clearApplication(userHandler);
+            } catch(NonSuccessException e) { //Error 500, server error
+                halt(); //TODO: Implement error 500
+            }
+            return ret;
         });
         Spark.post("/session", (req, res) -> {
-            return loginUser(req.body(), userHandler);
+            String ret = "";
+            try {
+                ret = loginUser(req.body(), userHandler);
+            }
+            catch(NonSuccessException e) {//TODO better error
+                halt(401,"{ \"message\": \"Error: unauthorized\" }");
+            }
+            return ret;
         });
         Spark.delete("/session", (req, res) -> {
             return logoutUser(req.headers("authorization"), userHandler);
