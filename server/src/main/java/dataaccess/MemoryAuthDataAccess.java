@@ -16,7 +16,6 @@ public class MemoryAuthDataAccess extends AuthDataAccess{
     @Override
     public AuthData createAuth(String username) {
         String authToken = UUID.randomUUID().toString();
-        //TODO: Possibly implement error here?
         AuthData newAuth = new AuthData(authToken, username);
         authsDB.put(authToken, newAuth);
         return newAuth;
