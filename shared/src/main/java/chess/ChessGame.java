@@ -126,22 +126,23 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if(isInCheck(teamColor)){
-            for(int i = 1; i <= currentBoard.getRowBounds(); i++){
-                for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
-                    ChessPosition spotlight = new ChessPosition(i, j);
-                    if(currentBoard.getPiece(spotlight) != null &&  teamColor == currentBoard.getPiece(spotlight).getTeamColor()) {
-                        Collection<ChessMove> possibleMoves = validMoves(spotlight);
-                        if(!possibleMoves.isEmpty()) {
-                            return false;
-                        }
+        if(!isInCheck(teamColor)) {
+            return false;
+        }
+        for(int i = 1; i <= currentBoard.getRowBounds(); i++){
+            for (int j = 1; j <=currentBoard.getColumnBounds(); j++){
+                ChessPosition spotlight = new ChessPosition(i, j);
+                if(currentBoard.getPiece(spotlight) != null &&  teamColor == currentBoard.getPiece(spotlight).getTeamColor()) {
+                    Collection<ChessMove> possibleMoves = validMoves(spotlight);
+                    if(!possibleMoves.isEmpty()) {
+                        return false;
                     }
                 }
             }
-            return true;
         }
-        return false;
+        return true;
     }
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
@@ -201,7 +202,8 @@ public class ChessGame {
 
     /*
     testMove is a helper function designed for validMoves.
-    It takes a ChessBoard, the position on that board that the piece we want to move is, and the position on the board that we're moving that piece to.
+    It takes a ChessBoard, the position on that board that the piece we want to move is,
+    and the position on the board that we're moving that piece to.
     It returns a ChessBoard that has our piece moved to its new location.
      */
     private ChessBoard testMove(ChessBoard board, ChessPosition pastPos, ChessPosition newPos) {

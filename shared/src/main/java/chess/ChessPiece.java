@@ -127,7 +127,9 @@ public class ChessPiece {
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) { //Adding this to all movement checks to be able to easily check if a piece's legal move list can take the enemy king.
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                            //Adding this to all movement checks to be able to easily check if a piece's legal move list
+                            //can take the enemy king.
                             hasCheck = true;
                         }
                         movesList.add(new ChessMove(myPosition, newPos, null));
@@ -207,7 +209,7 @@ public class ChessPiece {
         for (int i = 0; i < 8; i++) { //There are 8 ordered pairs of directions to move in
             int newRow = myPosition.getRow();
             int newCol = myPosition.getColumn();
-            boolean steppy = true; //steppy is set to become false at the end of the while loop every time to ensure we only step once in any direction
+            boolean steppy = true; //to ensure only one step in any direction
             while (steppy) {
                 newRow += directionRow[i];
                 newCol += directionCol[i];
@@ -218,7 +220,7 @@ public class ChessPiece {
                 if (board.getPiece(newPos) != null) {
                     if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
                         hasCheck = true;
-                    }// Realistically, should never happen. Put this code here in case test cases force me to identify that both kings are in check with each other.
+                    }//In case test cases force me to identify that both kings are in check with each other.
 
                         movesList.add(new ChessMove(myPosition, newPos, null));
                     }
