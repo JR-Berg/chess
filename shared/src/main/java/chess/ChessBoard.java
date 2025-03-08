@@ -58,15 +58,6 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
-    /*
-    Deletes a piece given its position.
-     */
-    public void nukePiece(ChessPosition position) {
-        int pieceRow = position.getRow();
-        int pieceCol = position.getColumn();
-        squares[pieceRow-1][pieceCol-1] = null;
-    }
-
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
@@ -85,7 +76,10 @@ public class ChessBoard {
         }
         //I'll use something similar to the movement vectors from ChessPiece's movement system
         //to hopefully make this easier for me.
-        ChessPiece.PieceType [] soldiers = {ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK};
+        ChessPiece.PieceType [] soldiers = {
+                ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK
+        };
         ChessGame.TeamColor [] color = {ChessGame.TeamColor.WHITE, ChessGame.TeamColor.BLACK};
         /*
         * Idea is as follows:
