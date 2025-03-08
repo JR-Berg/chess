@@ -2,8 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.GameData;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import request.*;
 import result.*;
 
@@ -24,8 +23,13 @@ public class UnitTests {
         userServices = new UserServices(mockUserDataAccess, mockAuthDataAccess, mockGameDataAccess);
         gameServices = new GameServices(mockUserDataAccess, mockAuthDataAccess, mockGameDataAccess);
     }
+    @AfterEach
+    public void clearStuff() {
+        userServices.clearAll();
+    }
 
     @Test
+    @Order(1)
     public void testRegister() {
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -34,6 +38,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(2)
     public void testFailRegister() {
         //Set up 3 register requests, register first 2 users.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -56,6 +61,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(3)
     public void testClear() {
         //Register 2 users.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -80,6 +86,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(4)
     public void testLogin() {
         //Register 2 users, ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -96,6 +103,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(5)
     public void testBadLogin() {
         //Register 2 users, ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -121,6 +129,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(6)
     public void testLogout() {
         //Register 2 users and ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -149,6 +158,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(7)
     public void testBadLogout() {
         //Register 2 users and ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -186,6 +196,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(8)
     public void testEmptyListGame() {
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -205,6 +216,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(9)
     public void testUnauthorizedListGame() {
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -215,7 +227,7 @@ public class UnitTests {
         String authToken = "BadAuthToken";
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         try {
-            ListGamesResult listGamesResult = gameServices.listGames(listGamesRequest);
+            gameServices.listGames(listGamesRequest);
         } catch(BadAuthException e) {
             assertEquals("AuthData invalid!", e.getMessage());
         }
@@ -235,6 +247,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(10)
     public void testCreateBadGame() {
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -260,6 +273,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(12)
     public void testListGamesIncrease() {
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -302,6 +316,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(13)
     public void testJoinGame() {
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
@@ -326,6 +341,7 @@ public class UnitTests {
     }
 
     @Test
+    @Order(14)
     public void testBadJoinGame() {
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");

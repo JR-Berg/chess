@@ -1,10 +1,8 @@
 package server;
 
-import com.google.gson.Gson;
 import dataaccess.*;
 import handler.GameHandler;
 import handler.UserHandler;
-import model.UserData;
 import service.GameServices;
 import service.UserServices;
 import spark.*;
@@ -12,7 +10,6 @@ import spark.*;
 import static spark.Spark.halt;
 
 public class Server {
-    //TODO: Go through and add Success Booleans to all of the objects in request and results.
     public int run(int desiredPort) {
         UserDataAccess userDataAccess = new MemoryUserDataAccess();
         AuthDataAccess userAuthAccess = new MemoryAuthDataAccess();
