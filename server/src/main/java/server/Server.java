@@ -43,7 +43,7 @@ public class Server {
             try {
                 ret = clearApplication(userHandler);
             } catch(NonSuccessException e) { //Error 500, server error
-                halt(); //TODO: Implement error 500
+                halt(); //Implement error 500
             }
             return ret;
         });
@@ -81,7 +81,7 @@ public class Server {
                 ret = listGames(req.headers("authorization"), gameHandler);
             } catch(BadAuthException e) { //Error 401, unauthorized (bad AuthToken)
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
-            } //TODO: Implement error 500
+            } //Implement error 500
             return ret;
         });
 
@@ -94,7 +94,7 @@ public class Server {
                 halt(400, "\"Error: bad request\"");
             } catch(BadAuthException e) { //Error 401, unauthorized
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
-            } //TODO: implement error 500
+            } //implement error 500
             return ret;
         });
 
@@ -111,7 +111,7 @@ public class Server {
                 halt(403, "{ \"message\": \"Error: already taken\" }");
             } catch(WhomstException e) { //Error 400 again, attempted to join a bad team (like green)
                 halt(400, "{ \"message\": \"Error: bad request\" }");
-            }//TODO: Implement error 500
+            }//Implement error 500
             return ret;
         });
         //This line initializes the server and can be removed once you have a functioning endpoint 
