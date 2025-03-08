@@ -1,10 +1,6 @@
 package service;
 
-import com.google.gson.Gson;
-import dataaccess.MemoryAuthDataAccess;
-import dataaccess.MemoryGameDataAccess;
-import dataaccess.MemoryUserDataAccess;
-import dataaccess.NonSuccessException;
+import dataaccess.*;
 import model.GameData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,7 +15,6 @@ public class UnitTests {
     static MemoryUserDataAccess mockUserDataAccess;
     static MemoryAuthDataAccess mockAuthDataAccess;
     static MemoryGameDataAccess mockGameDataAccess;
-    Gson serializer = new Gson();
 
     @BeforeAll
     public static void setUp() {
@@ -32,8 +27,16 @@ public class UnitTests {
 
     @Test
     public void testRegister() {
+        //Register a user and confirm they were registered
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testFailRegister() {
         //Set up 3 register requests, register first 2 users.
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
         RegisterRequest request3 = new RegisterRequest("test2user", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -47,7 +50,7 @@ public class UnitTests {
         try {
             userServices.register(request3);
             fail("Expected NonSuccessException to be thrown");
-        } catch (NonSuccessException e) { //TODO: Replace this error with proper error
+        } catch (NonSuccessException e) {
             assertEquals("Username Taken!", e.getMessage());
         }
     }
@@ -55,7 +58,7 @@ public class UnitTests {
     @Test
     public void testClear() {
         //Register 2 users.
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         RegisterResult result2 = userServices.register(request2);
@@ -79,7 +82,7 @@ public class UnitTests {
     @Test
     public void testLogin() {
         //Register 2 users, ensure they were registered properly.
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         RegisterResult result2 = userServices.register(request2);
@@ -87,7 +90,23 @@ public class UnitTests {
         assertNotNull(result2);
 
         //Correctly login first user, ensure they were logged in
-        LoginRequest lRequest = new LoginRequest("testuser", "password");
+        LoginRequest lRequest = new LoginRequest("testUser", "password");
+        LoginResult lResult = userServices.login(lRequest);
+        assertNotNull(lResult);
+    }
+
+    @Test
+    public void testBadLogin() {
+        //Register 2 users, ensure they were registered properly.
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        RegisterResult result2 = userServices.register(request2);
+        assertNotNull(result);
+        assertNotNull(result2);
+
+        //Correctly login first user, ensure they were logged in
+        LoginRequest lRequest = new LoginRequest("testUser", "password");
         LoginResult lResult = userServices.login(lRequest);
         assertNotNull(lResult);
 
@@ -96,7 +115,7 @@ public class UnitTests {
         try {
             userServices.login(lRequest2);
             fail("Expected NonSuccessException to be thrown");
-        } catch (NonSuccessException e) { //TODO: Replace this error with proper error
+        } catch (NonSuccessException e) {
             assertEquals("Incorrect password!", e.getMessage());
         }
     }
@@ -104,7 +123,7 @@ public class UnitTests {
     @Test
     public void testLogout() {
         //Register 2 users and ensure they were registered properly.
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         RegisterResult result2 = userServices.register(request2);
@@ -112,14 +131,42 @@ public class UnitTests {
         assertNotNull(result2);
 
         //Login both users properly
-        LoginRequest lRequest = new LoginRequest("testuser", "password");
+        LoginRequest lRequest = new LoginRequest("testUser", "password");
         LoginRequest lRequest2 = new LoginRequest("test2user", "password");
         LoginResult lResult = userServices.login(lRequest);
         LoginResult lResult2 = userServices.login(lRequest2);
         assertNotNull(lResult);
         assertNotNull(lResult2);
 
-        //Attempt to logout first user and ensure their authData is null
+        //Attempt to log out first user and ensure their authData is null
+        String authToken = lResult.authToken();
+        LogoutRequest loutRequest = new LogoutRequest(authToken);
+        userServices.logout(loutRequest);
+        assertNull(mockAuthDataAccess.getAuth(authToken));
+
+        //Ensure second user is still logged in
+        assertNotNull(mockAuthDataAccess.getAuth(lResult2.authToken()));
+    }
+
+    @Test
+    public void testBadLogout() {
+        //Register 2 users and ensure they were registered properly.
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        RegisterResult result2 = userServices.register(request2);
+        assertNotNull(result);
+        assertNotNull(result2);
+
+        //Login both users properly
+        LoginRequest lRequest = new LoginRequest("testUser", "password");
+        LoginRequest lRequest2 = new LoginRequest("test2user", "password");
+        LoginResult lResult = userServices.login(lRequest);
+        LoginResult lResult2 = userServices.login(lRequest2);
+        assertNotNull(lResult);
+        assertNotNull(lResult2);
+
+        //Attempt to log out first user and ensure their authData is null
         String authToken = lResult.authToken();
         LogoutRequest loutRequest = new LogoutRequest(authToken);
         userServices.logout(loutRequest);
@@ -132,16 +179,16 @@ public class UnitTests {
         LogoutRequest invalidLogoutRequest = new LogoutRequest("invalid_token");
         try {
             userServices.logout(invalidLogoutRequest);
-            fail("expected error"); //TODO make better message
-        } catch(NonSuccessException e) { //TODO make better error
-            assertEquals("Invalid AuthData", e.getMessage());
+            fail("expected error");
+        } catch(BadAuthException e) {
+            assertEquals("AuthData invalid!", e.getMessage());
         }
     }
 
     @Test
     public void testEmptyListGame() {
         //Register one user, ensure user was registered
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         assertNotNull(result);
 
@@ -158,9 +205,39 @@ public class UnitTests {
     }
 
     @Test
+    public void testUnauthorizedListGame() {
+        //Register one user, ensure user was registered
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        assertNotNull(result);
+
+        //Attempt to list games
+        String authToken = "BadAuthToken";
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+        try {
+            ListGamesResult listGamesResult = gameServices.listGames(listGamesRequest);
+        } catch(BadAuthException e) {
+            assertEquals("AuthData invalid!", e.getMessage());
+        }
+    }
+    @Test
     public void testCreateGame() {
         //Register a user and confirm they were registered
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        assertNotNull(result);
+
+        //Create a game and ensure game is not null
+        String authToken = result.authToken();
+        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "testGame");
+        CreateGameResult createGameResult = gameServices.createGame(createGameRequest);
+        assertNotNull(createGameResult);
+    }
+
+    @Test
+    public void testCreateBadGame() {
+        //Register a user and confirm they were registered
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         assertNotNull(result);
 
@@ -176,8 +253,8 @@ public class UnitTests {
         //Catch failure due to same name
         try {
             gameServices.createGame(createBadGameRequest);
-            fail("expected error"); //TODO make better message
-        } catch(NonSuccessException e) { //TODO make better error
+            fail("expected error");
+        } catch(NonSuccessException e) {
             assertEquals("gameName already exists!", e.getMessage());
         }
     }
@@ -185,7 +262,7 @@ public class UnitTests {
     @Test
     public void testListGamesIncrease() {
         //Register one user, ensure user was registered
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         assertNotNull(result);
 
@@ -227,7 +304,31 @@ public class UnitTests {
     @Test
     public void testJoinGame() {
         //Register a user and confirm they were registered
-        RegisterRequest request = new RegisterRequest("testuser", "password", "test@example.com");
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
+        RegisterResult result = userServices.register(request);
+        assertNotNull(result);
+
+        //Create a game and ensure game is not null
+        String authToken = result.authToken();
+        CreateGameRequest createGameRequest = new CreateGameRequest(authToken, "testGame");
+        CreateGameResult createGameResult = gameServices.createGame(createGameRequest);
+        assertNotNull(createGameResult);
+
+        //Attempt to join game on white team, ensure that joinGame is not null
+        JoinGameRequest joinGameRequest = new JoinGameRequest(authToken, "WHITE", createGameResult.gameID());
+        JoinGameResult joinGameResult = gameServices.joinGame(joinGameRequest);
+        assertNotNull(joinGameResult);
+
+        //Check if our game's white team player is now our username
+        String username = result.username();
+        GameData gameData = mockGameDataAccess.getGame(createGameResult.gameID());
+        assertEquals(gameData.whiteUsername(), username);
+    }
+
+    @Test
+    public void testBadJoinGame() {
+        //Register a user and confirm they were registered
+        RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
         assertNotNull(result);
 
@@ -251,8 +352,8 @@ public class UnitTests {
         JoinGameRequest badJoinGameRequest = new JoinGameRequest(authToken, "WHITE", createGameResult.gameID());
         try {
             gameServices.joinGame(badJoinGameRequest);
-            fail("should have thrown error"); //TODO make better?
-        } catch(NonSuccessException e) { //TODO make better error
+            fail("should have thrown error");
+        } catch(NonSuccessException e) {
             assertEquals("Team already taken!", e.getMessage());
         }
     }

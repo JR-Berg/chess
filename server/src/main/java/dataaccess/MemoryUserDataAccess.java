@@ -3,11 +3,6 @@ package dataaccess;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
-
-import dataaccess.NonSuccessException;
-import dataaccess.UserDataAccess;
-import model.AuthData;
 import model.UserData;
 
 public class MemoryUserDataAccess extends UserDataAccess {
@@ -22,7 +17,7 @@ public class MemoryUserDataAccess extends UserDataAccess {
     // Method to add a new user
     public UserData createUser(String username, String password, String email) {
         if (usernameExists(username)) {
-            throw new NonSuccessException("User already exists!"); //TODO: Better error
+            throw new NonSuccessException("User already exists!");
         }
         UserData user = new UserData(username, password, email);
         usersDB.put(username, user);

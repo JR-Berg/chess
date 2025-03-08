@@ -20,9 +20,8 @@ public class UserHandler {
         RegisterResult registerResult = userServices.register(registerRequest);
         return serializer.toJson(registerResult);
     }
-    public String clearApplication() {
+    public void clearApplication() {
         userServices.clearAll();
-        return "";
     }
     public String loginUser(String requestBody) {
         LoginRequest loginRequest = serializer.fromJson(requestBody, request.LoginRequest.class);
@@ -31,8 +30,7 @@ public class UserHandler {
     }
 
     public void logoutUser(String requestHeader) {
-        String authToken = requestHeader;
-        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+        LogoutRequest logoutRequest = new LogoutRequest(requestHeader);
         userServices.logout(logoutRequest);
     }
 }

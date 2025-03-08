@@ -10,10 +10,9 @@ import result.LoginResult;
 import result.RegisterResult;
 
 public class UserServices {
-    //TODO: Make checking auth its own function probably
-    private UserDataAccess userDataAccess;
-    private AuthDataAccess authDataAccess;
-    private GameDataAccess gameDataAccess;
+    private final UserDataAccess userDataAccess;
+    private final AuthDataAccess authDataAccess;
+    private final GameDataAccess gameDataAccess;
     public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;

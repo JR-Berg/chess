@@ -15,11 +15,9 @@ import java.util.Collection;
 import java.util.Map;
 
 public class GameServices {
-    private UserDataAccess userDataAccess;
-    private AuthDataAccess authDataAccess;
-    private GameDataAccess gameDataAccess;
+    private final AuthDataAccess authDataAccess;
+    private final GameDataAccess gameDataAccess;
     public GameServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
-        this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
         this.gameDataAccess = gameDataAccess;
     }
@@ -28,7 +26,7 @@ public class GameServices {
         if(listGamesRequest.authToken() == null) {
             throw new BadDataException("No AuthToken!");
         }
-        AuthData auth = checkAuth(listGamesRequest.authToken());
+        checkAuth(listGamesRequest.authToken());
         Map<Integer, GameData> games = gameDataAccess.listGames();
         Collection<GameData> gamesList = games.values();
         return new ListGamesResult(gamesList);
@@ -38,7 +36,7 @@ public class GameServices {
         if(createGameRequest.gameName() == null || createGameRequest.authToken() == null) {
             throw new BadDataException("Not enough data!");
         }
-        AuthData auth = checkAuth(createGameRequest.authToken());
+        checkAuth(createGameRequest.authToken());
         Integer gameId = gameDataAccess.getGameIDByName(createGameRequest.gameName());
         if(gameId != null) {
             throw new NonSuccessException("gameName already exists!");
