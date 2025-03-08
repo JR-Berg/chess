@@ -50,27 +50,72 @@ public class Server {
             }
             return ret;
         });
+
+        //Login
         Spark.post("/session", (req, res) -> {
             String ret = "";
             try {
                 ret = loginUser(req.body(), userHandler);
-            }
-            catch(NonSuccessException e) {//TODO better error
+            } catch(NonSuccessException e) { //Error 401, unauthorized (bad authToken)
                 halt(401,"{ \"message\": \"Error: unauthorized\" }");
+            } catch(WhomstException e) { //Also error 401, but wrong username
+                halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            } catch(BadDataException e) { //Error 400, not enough input probably
+                halt(400, "{ \"message\": \"Error: bad request\" }");
             }
             return ret;
         });
+
+        //Logout
         Spark.delete("/session", (req, res) -> {
-            return logoutUser(req.headers("authorization"), userHandler);
+            String ret = "";
+            try {
+                ret = logoutUser(req.headers("authorization"), userHandler);
+            } catch(BadAuthException e) { //Error 401, unauthorized (bad authToken)
+                halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            }
+            return ret;
         });
+
+        //List games
         Spark.get("/game", (req, res) -> {
-            return listGames(req.headers("authorization"), gameHandler);
+            String ret = "";
+            try {
+                ret = listGames(req.headers("authorization"), gameHandler);
+            } catch(BadAuthException e) { //Error 401, unauthorized (bad AuthToken)
+                halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            } //TODO: Implement error 500
+            return ret;
         });
+
+        //Create Game
         Spark.post("/game", (req, res) -> {
-            return createGame(req.headers("authorization"), req.body(), gameHandler);
+            String ret = "";
+            try {
+                ret = createGame(req.headers("authorization"), req.body(), gameHandler);
+            } catch(BadDataException e) { //Error 400, bad request (not enough data)
+                halt(400, "\"Error: bad request\"");
+            } catch(BadAuthException e) { //Error 401, unauthorized
+                halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            } //TODO: implement error 500
+            return ret;
         });
+
+        //Join game
         Spark.put("/game", (req, res) -> {
-            return joinGame(req.headers("authorization"), req.body(), gameHandler);
+            String ret = "";
+            try {
+                ret = joinGame(req.headers("authorization"), req.body(), gameHandler);
+            } catch(BadDataException e) { //Error 400, bad request (like not enough data input)
+                halt(400, "{ \"message\": \"Error: bad request\" }");
+            } catch(BadAuthException e) { //Error 401, unauthorized (bad AuthData)
+                halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            } catch(OverlapException e) { //Error 403, attempted to join team already taken
+                halt(403, "{ \"message\": \"Error: already taken\" }");
+            } catch(WhomstException e) { //Error 400 again, attempted to join a bad team (like green)
+                halt(400, "{ \"message\": \"Error: bad request\" }");
+            }//TODO: Implement error 500
+            return ret;
         });
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();

@@ -1,11 +1,15 @@
 package handler;
 
 import com.google.gson.Gson;
+import model.GameData;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.ListGamesResult;
 import service.GameServices;
+
+import java.util.Collection;
+import java.util.Set;
 
 public class GameHandler {
     Gson serializer = new Gson();
@@ -17,6 +21,8 @@ public class GameHandler {
         String authToken = requestHeader;
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult = gameServices.listGames(listGamesRequest);
+        //Collection<GameData> gamesList = listGamesResult.games().values();
+        //return serializer.toJson(gamesList);
         return serializer.toJson(listGamesResult);
     }
 

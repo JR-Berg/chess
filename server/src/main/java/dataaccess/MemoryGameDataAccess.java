@@ -1,9 +1,7 @@
 package dataaccess;
 
-import chess.ChessGame;
+
 import model.GameData;
-import model.UserData;
-import result.ListGamesResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,16 +38,19 @@ public class MemoryGameDataAccess extends GameDataAccess {
         GameData gameData = gamesDB.get(gameID);
         GameData newGameData;
         if(Objects.equals(teamColor, "WHITE")) {
-            if(!Objects.equals(gameData.whiteUsername(), "")) {
-                throw new NonSuccessException("Team already taken!"); //TODO: Make better error
+            if(!Objects.equals(gameData.whiteUsername(), null)) {
+                throw new NonSuccessException("Team already taken!");
             }
             newGameData = new GameData(gameID, username, gameData.blackUsername(), gameData.gameName(), gameData.game());
         }
-        else {
-            if(!Objects.equals(gameData.blackUsername(), "")) {
-                throw new NonSuccessException("Team already taken!"); //TODO: Make better error
+        else if(Objects.equals(teamColor, "BLACK")){
+            if(!Objects.equals(gameData.blackUsername(), null)) {
+                throw new OverlapException("Team already taken!");
             }
             newGameData = new GameData(gameID, gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+        }
+        else {
+            throw new WhomstException("Whose mans is this");
         }
         gamesDB.put(gameID, newGameData);
     }

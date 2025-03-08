@@ -153,8 +153,7 @@ public class UnitTests {
         //Ensure result is not null
         assertNotNull(listGamesResult);
 
-        //Ensure result confirms our success, and ensure list of games is empty.
-        assertTrue(listGamesResult.success());
+        //Ensure list of games is empty.
         assertTrue(listGamesResult.games().isEmpty());
     }
 
@@ -196,8 +195,7 @@ public class UnitTests {
         ListGamesResult listGamesResult = gameServices.listGames(listGamesRequest);
         //Ensure result is not null
         assertNotNull(listGamesResult);
-        //Ensure result confirms our success, and ensure list of games is empty.
-        assertTrue(listGamesResult.success());
+        //Ensure list of games is empty.
         assertTrue(listGamesResult.games().isEmpty());
 
         //Create a game and ensure it is not null
@@ -209,7 +207,6 @@ public class UnitTests {
         ListGamesRequest listGamesRequest1 = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult1 = gameServices.listGames(listGamesRequest1);
         assertNotNull(listGamesResult1);
-        assertTrue(listGamesResult1.success());
         assertFalse(listGamesResult1.games().isEmpty());
 
         //Create 2 more games and ensure they are not null
@@ -224,7 +221,6 @@ public class UnitTests {
         ListGamesRequest listGamesRequest2 = new ListGamesRequest(authToken);
         ListGamesResult listGamesResult2 = gameServices.listGames(listGamesRequest2);
         assertNotNull(listGamesResult2);
-        assertTrue(listGamesResult2.success());
         assertEquals(3, listGamesResult2.games().size());
     }
 

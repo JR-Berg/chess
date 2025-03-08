@@ -1,6 +1,5 @@
 package dataaccess;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -24,9 +23,8 @@ public class MemoryAuthDataAccess extends AuthDataAccess{
     }
 
     @Override
-    public String deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) {
         authsDB.remove(authToken);
-        return "successfully deleted";
     }
 
     public String clearAll() {

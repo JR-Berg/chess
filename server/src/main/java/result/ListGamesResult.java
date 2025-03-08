@@ -2,9 +2,8 @@ package result;
 
 import model.GameData;
 
-import java.util.Map;
+import java.util.Collection;
 
 public record ListGamesResult(
-        Map<Integer, GameData> games,
-        Boolean success) {
+        Collection<GameData> games) {
 }
