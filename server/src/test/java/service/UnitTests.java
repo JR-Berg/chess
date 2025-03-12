@@ -29,6 +29,17 @@ public class UnitTests {
     }
 
     @Test
+    public void example() throws Exception {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
+                var rs = preparedStatement.executeQuery();
+                rs.next();
+                System.out.println(rs.getInt(1));
+            }
+        }
+    }
+
+    @Test
     @Order(1)
     public void testRegister() {
         //Register a user and confirm they were registered
