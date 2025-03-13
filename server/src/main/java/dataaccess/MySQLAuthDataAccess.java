@@ -64,8 +64,26 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     }
 
     @Override
-    public void deleteAuth(String username) {
+    public void deleteAuth(String authToken) {
+        String insertNewAuthSQL = "DELETE FROM Auth WHERE authToken = ?";
+        try(Connection conn = DatabaseManager.getConnection();
+            PreparedStatement createAuthStatement = conn.prepareStatement(insertNewAuthSQL)) {
+            createAuthStatement.setString(1, authToken);
 
+            int rowsAffected = createAuthStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("AuthToken deleted successfully!");
+            } else {
+                System.out.println("Error: AuthToken deletion failed.");
+                throw new NonSuccessException("AuthToken deletion failed.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error during AuthToken deletion");
+            throw new NonSuccessException("Error during AuthToken deletion.");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
