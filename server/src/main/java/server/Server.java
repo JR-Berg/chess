@@ -7,11 +7,13 @@ import service.GameServices;
 import service.UserServices;
 import spark.*;
 
+import java.sql.SQLException;
+
 import static spark.Spark.halt;
 
 public class Server {
-    public int run(int desiredPort) {
-        UserDataAccess userDataAccess = new MemoryUserDataAccess();
+    public int run(int desiredPort) throws SQLException, DataAccessException {
+        MySQLUserDataAccess userDataAccess = new MySQLUserDataAccess();
         AuthDataAccess userAuthAccess = new MemoryAuthDataAccess();
         GameDataAccess gameDataAccess = new MemoryGameDataAccess();
         UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
