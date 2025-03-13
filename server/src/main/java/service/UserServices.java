@@ -14,23 +14,13 @@ import java.sql.SQLException;
 
 public class UserServices {
     private static Boolean isDatabaseTested = false;
-    private final MySQLUserDataAccess userDataAccess;
+    private final UserDataAccess userDataAccess;
     private final AuthDataAccess authDataAccess;
     private final GameDataAccess gameDataAccess;
-    public UserServices(MySQLUserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
+    public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) throws SQLException {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
         this.gameDataAccess = gameDataAccess;
-
-        if (!isDatabaseTested) {
-            try {
-                testDatabaseConnection();
-                isDatabaseTested = true;
-            } catch (SQLException | DataAccessException e) {
-                System.out.println("Database connection failed during initialization: " + e.getMessage());
-            }
-        }
-
     }
 
     public RegisterResult register(RegisterRequest registerRequest) {
@@ -85,14 +75,6 @@ public class UserServices {
             throw new BadAuthException("AuthData invalid!");
         }
         return auth;
-    }
-    public void testDatabaseConnection() throws SQLException, DataAccessException {
-        Connection conn = userDataAccess.connect();
-        if (conn != null) {
-            System.out.println("Successfully connected to the database!");
-        } else {
-            System.out.println("Failed to connect to the database.");
-        }
     }
 
 

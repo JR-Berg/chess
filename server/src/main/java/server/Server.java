@@ -13,7 +13,7 @@ import static spark.Spark.halt;
 
 public class Server {
     public int run(int desiredPort) throws SQLException, DataAccessException {
-        MySQLUserDataAccess userDataAccess = new MySQLUserDataAccess();
+        UserDataAccess userDataAccess = new MySQLUserDataAccess();
         AuthDataAccess userAuthAccess = new MemoryAuthDataAccess();
         GameDataAccess gameDataAccess = new MemoryGameDataAccess();
         UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
@@ -116,7 +116,7 @@ public class Server {
             }//Implement error 500
             return ret;
         });
-        //This line initializes the server and can be removed once you have a functioning endpoint 
+        //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
         Spark.awaitInitialization();

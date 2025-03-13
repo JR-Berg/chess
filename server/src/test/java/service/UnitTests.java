@@ -6,6 +6,8 @@ import org.junit.jupiter.api.*;
 import request.*;
 import result.*;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UnitTests {
@@ -16,7 +18,7 @@ public class UnitTests {
     static MemoryGameDataAccess mockGameDataAccess;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp() throws SQLException {
         mockUserDataAccess = new MemoryUserDataAccess();
         mockAuthDataAccess = new MemoryAuthDataAccess();
         mockGameDataAccess = new MemoryGameDataAccess();
@@ -28,16 +30,6 @@ public class UnitTests {
         userServices.clearAll();
     }
 
-    @Test
-    public void example() throws Exception {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("SELECT 1+1")) {
-                var rs = preparedStatement.executeQuery();
-                rs.next();
-                System.out.println(rs.getInt(1));
-            }
-        }
-    }
 
     @Test
     @Order(1)
