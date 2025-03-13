@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,11 +17,13 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public UserData createUser(String username, String password, String email) {
-        if (checkUsername(username) == null) {
+        if (checkUsername(username) != null) {
             System.out.println("Username is already taken.");
             throw new NonSuccessException("Username is already taken.");
         }
-        UserData userData = new UserData(username, password, email);
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        System.out.println(hashedPassword);
+        UserData userData = new UserData(username, hashedPassword, email);
         // Insert the new user into the database
         String insertUserSQL = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 
@@ -29,7 +32,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
             // Set the parameters for the prepared statement
             createUserStatement.setString(1, username);
-            createUserStatement.setString(2, password);  // You might want to hash the password before storing it
+            createUserStatement.setString(2, hashedPassword);  // You might want to hash the password before storing it
             createUserStatement.setString(3, email);
 
             // Execute the insertion
@@ -57,16 +60,19 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public String clearAll() {
+
         return "";
     }
 
     @Override
-    public Boolean checkPassword(String username, String password) {
+    public Boolean checkPassword(String username, String providedClearTextPassword) {
         UserData userData = checkUsername(username);
         if(userData == null) {
             return false;
         }
-        return Objects.equals(userData.password(), password);
+        String hashedPassword = userData.password();
+        System.out.println("Logged in successfully!");
+        return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
     private UserData checkUsername(String username) {
@@ -114,7 +120,8 @@ public class MySQLUserDataAccess extends UserDataAccess{
             CREATE TABLE IF NOT EXISTS Users (
                 username VARCHAR(255) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
-                email VARCHAR(255) NOT NULL UNIQUE
+                email VARCHAR(255) NOT NULL,
+                PRIMARY KEY (username)
             )""";
 
 
