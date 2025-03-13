@@ -60,7 +60,17 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public String clearAll() {
-
+        String clearTableSQL = "TRUNCATE TABLE users";
+        try(Connection conn = DatabaseManager.getConnection();
+            PreparedStatement deleteUsersStatement = conn.prepareStatement(clearTableSQL)) {
+            deleteUsersStatement.executeUpdate();
+            System.out.println("Users Table deleted successfully!");
+        } catch (SQLException e) {
+            System.out.println("Error during clearing Users Table.");
+            throw new NonSuccessException("Error during clearing Users Table.");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return "";
     }
 

@@ -65,12 +65,12 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
 
     @Override
     public void deleteAuth(String authToken) {
-        String insertNewAuthSQL = "DELETE FROM Auth WHERE authToken = ?";
+        String deleteAuthSQL = "DELETE FROM Auth WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection();
-            PreparedStatement createAuthStatement = conn.prepareStatement(insertNewAuthSQL)) {
-            createAuthStatement.setString(1, authToken);
+            PreparedStatement deleteAuthStatement = conn.prepareStatement(deleteAuthSQL)) {
+            deleteAuthStatement.setString(1, authToken);
 
-            int rowsAffected = createAuthStatement.executeUpdate();
+            int rowsAffected = deleteAuthStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("AuthToken deleted successfully!");
             } else {
@@ -88,6 +88,17 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
 
     @Override
     public String clearAll() {
+        String clearTableSQL = "TRUNCATE TABLE Auth";
+        try(Connection conn = DatabaseManager.getConnection();
+            PreparedStatement deleteAuthStatement = conn.prepareStatement(clearTableSQL)) {
+            deleteAuthStatement.executeUpdate();
+            System.out.println("Auth Table deleted successfully!");
+        } catch (SQLException e) {
+            System.out.println("Error during clearing AuthTable.");
+            throw new NonSuccessException("Error during clearing AuthTable.");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return "";
     }
 
