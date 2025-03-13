@@ -14,8 +14,8 @@ import static spark.Spark.halt;
 public class Server {
     public int run(int desiredPort) throws SQLException, DataAccessException {
         UserDataAccess userDataAccess = new MySQLUserDataAccess();
-        AuthDataAccess userAuthAccess = new MemoryAuthDataAccess();
-        GameDataAccess gameDataAccess = new MemoryGameDataAccess();
+        AuthDataAccess userAuthAccess = new MySQLAuthDataAccess();
+        GameDataAccess gameDataAccess = new MySQLGameDataAccess();
         UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
         UserHandler userHandler = new UserHandler(userServices);
         GameServices gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);

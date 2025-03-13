@@ -32,7 +32,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
             // Set the parameters for the prepared statement
             createUserStatement.setString(1, username);
-            createUserStatement.setString(2, hashedPassword);  // You might want to hash the password before storing it
+            createUserStatement.setString(2, hashedPassword);
             createUserStatement.setString(3, email);
 
             // Execute the insertion
@@ -108,7 +108,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
             System.out.println("Error connecting to the database: " + e.getMessage());
         }
     }
-    
+
     public void createTables() throws SQLException {
         try (var conn = DatabaseManager.getConnection()) {
             var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
