@@ -25,7 +25,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
         System.out.println(hashedPassword);
         UserData userData = new UserData(username, hashedPassword, email);
         // Insert the new user into the database
-        String insertUserSQL = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+        String insertUserSQL = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement createUserStatement = conn.prepareStatement(insertUserSQL)) {
@@ -60,7 +60,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public String clearAll() {
-        String clearTableSQL = "TRUNCATE TABLE users";
+        String clearTableSQL = "TRUNCATE TABLE Users";
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement deleteUsersStatement = conn.prepareStatement(clearTableSQL)) {
             deleteUsersStatement.executeUpdate();
@@ -86,7 +86,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
     }
 
     private UserData checkUsername(String username) {
-        String checkUsernameSQL = "SELECT * FROM users WHERE username = ?";
+        String checkUsernameSQL = "SELECT * FROM Users WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement checkUsernameStatement = conn.prepareStatement(checkUsernameSQL)) {
