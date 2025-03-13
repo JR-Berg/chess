@@ -6,15 +6,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class MySQLUserDataAccess extends UserDataAccess{
     public MySQLUserDataAccess() throws SQLException, DataAccessException {
         connect();
         createTables();
     }
+
     @Override
     public UserData createUser(String username, String password, String email) {
-        if (isUsernameTaken(username)) {
+        if (checkUsername(username) == null) {
             System.out.println("Username is already taken.");
             throw new NonSuccessException("Username is already taken.");
         }
@@ -23,15 +25,15 @@ public class MySQLUserDataAccess extends UserDataAccess{
         String insertUserSQL = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(insertUserSQL)) {
+             PreparedStatement createUserStatement = conn.prepareStatement(insertUserSQL)) {
 
             // Set the parameters for the prepared statement
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);  // You might want to hash the password before storing it
-            pstmt.setString(3, email);
+            createUserStatement.setString(1, username);
+            createUserStatement.setString(2, password);  // You might want to hash the password before storing it
+            createUserStatement.setString(3, email);
 
             // Execute the insertion
-            int rowsAffected = pstmt.executeUpdate();
+            int rowsAffected = createUserStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("User registered successfully!");
                 return userData;
@@ -50,7 +52,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public UserData getUser(String username) {
-        return null;
+        return checkUsername(username);
     }
 
     @Override
@@ -60,18 +62,25 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     @Override
     public Boolean checkPassword(String username, String password) {
-        return null;
+        UserData userData = checkUsername(username);
+        if(userData == null) {
+            return false;
+        }
+        return Objects.equals(userData.password(), password);
     }
-    private boolean isUsernameTaken(String username) {
-        String checkUsernameSQL = "SELECT COUNT(*) FROM users WHERE username = ?";
+
+    private UserData checkUsername(String username) {
+        String checkUsernameSQL = "SELECT * FROM users WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(checkUsernameSQL)) {
+             PreparedStatement checkUsernameStatement = conn.prepareStatement(checkUsernameSQL)) {
 
-            pstmt.setString(1, username);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return true;  // Username is taken
+            checkUsernameStatement.setString(1, username);
+            ResultSet rs = checkUsernameStatement.executeQuery();
+            if (rs.next()) {
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+                return new UserData(username, password, email);  // Username exists
             }
 
         } catch (SQLException e) {
@@ -80,7 +89,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
             throw new RuntimeException(e);
         }
 
-        return false;  // Username is not taken
+        return null;  // Username does not exist
     }
 
     public void connect() throws SQLException, DataAccessException {

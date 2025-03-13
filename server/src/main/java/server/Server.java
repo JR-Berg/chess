@@ -57,7 +57,7 @@ public class Server {
                 ret = loginUser(req.body(), userHandler);
             } catch(NonSuccessException e) { //Error 401, unauthorized (bad authToken)
                 halt(401,"{ \"message\": \"Error: unauthorized\" }");
-            } catch(WhomstException e) { //Also error 401, but wrong username
+            } catch(WhomstException e) { //Also error 401, but wrong password
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
             } catch(BadDataException e) { //Error 400, not enough input probably
                 halt(400, "{ \"message\": \"Error: bad request\" }");
