@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
@@ -7,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MySQLGameDataAccess extends GameDataAccess{
@@ -57,7 +59,34 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
     @Override
     public Map<Integer, GameData> listGames() {
-        return Map.of();
+        HashMap<Integer, GameData> games = new HashMap<>();
+        String getGamesSQL = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
+        Gson gson = new Gson();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(getGamesSQL);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int gameID = rs.getInt("gameID");
+                String whiteUsername = rs.getString("whiteUsername");
+                String blackUsername = rs.getString("blackUsername");
+                String gameName = rs.getString("gameName");
+                String jsonGame = rs.getString("game");
+
+                ChessGame chessGame = gson.fromJson(jsonGame, ChessGame.class);
+
+                GameData gameData = new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
+                games.put(gameID, gameData);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving games: " + e.getMessage());
+        } catch(DataAccessException e) {
+            System.out.println("DataAccessException in listGames");
+            throw new NonSuccessException("DataAccessException in listGames");
+        }
+
+        return games;
     }
 
     @Override
