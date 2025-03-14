@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import static spark.Spark.halt;
 
 public class Server {
-    public int run(int desiredPort) throws SQLException, DataAccessException {
+    public int run(int desiredPort) {
         UserDataAccess userDataAccess = new MySQLUserDataAccess();
         AuthDataAccess userAuthAccess = new MySQLAuthDataAccess();
         GameDataAccess gameDataAccess = new MySQLGameDataAccess();
@@ -35,6 +35,8 @@ public class Server {
                 halt(403, "{ \"message\": \"Error: already taken\" }");
             } catch(BadDataException e) { //Error 400, bad request (for example, didn't input enough data)
                 halt(400, "{ \"message\": \"Error: bad request\" }");
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: (description of error)\" }");
             }
             return ret;
         });
@@ -44,8 +46,8 @@ public class Server {
             String ret = "";
             try {
                 ret = clearApplication(userHandler);
-            } catch(NonSuccessException e) { //Error 500, server error
-                halt(); //Implement error 500
+            } catch(DataAccessException e) { //Error 500, server error
+                halt(500, "{ \"message\": \"Error: (description of error)\" }"); //Implement error 500
             }
             return ret;
         });

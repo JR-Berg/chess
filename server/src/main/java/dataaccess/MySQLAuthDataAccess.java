@@ -87,7 +87,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     }
 
     @Override
-    public String clearAll() {
+    public String clearAll() throws DataAccessException {
         String clearTableSQL = "TRUNCATE TABLE Auth";
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement deleteAuthStatement = conn.prepareStatement(clearTableSQL)) {
@@ -95,9 +95,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
             System.out.println("Auth Table deleted successfully!");
         } catch (SQLException e) {
             System.out.println("Error during clearing AuthTable.");
-            throw new NonSuccessException("Error during clearing AuthTable.");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Error during clearAll Auth");
         }
         return "";
     }

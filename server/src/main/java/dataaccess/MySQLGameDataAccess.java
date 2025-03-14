@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MySQLGameDataAccess extends GameDataAccess{
 
@@ -126,12 +127,61 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
     @Override
     public GameData getGame(Integer gameID) {
+        String findGameSQL = "SELECT * FROM Games WHERE gameID = ?";
+        Gson gson = new Gson();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement findGameStatement = conn.prepareStatement(findGameSQL)) {
+
+            findGameStatement.setInt(1, gameID);
+            ResultSet rs = findGameStatement.executeQuery();
+            if (rs.next()) {
+                String whiteUsername = rs.getString("whiteUsername");
+                String blackUsername = rs.getString("blackUsername");
+                String gameName = rs.getString("gameName");
+                String jsonGame = rs.getString("game");
+
+                ChessGame chessGame = gson.fromJson(jsonGame, ChessGame.class);
+
+                return new GameData(gameID, whiteUsername, blackUsername, gameName, chessGame);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQLException in getGame: " + e.getMessage());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return null;
     }
 
     @Override
     public void setPlayerTeam(Integer gameID, String username, String teamColor) {
+        String setPlayerTeamSQL;
+        if(Objects.equals(teamColor, "WHITE")) {
+            setPlayerTeamSQL = "UPDATE Games SET whiteUsername = ? WHERE gameID = ? AND whiteUsername IS NULL";
+        } else if(Objects.equals(teamColor, "BLACK")) {
+            setPlayerTeamSQL = "UPDATE Games SET blackUsername = ? WHERE gameID = ? AND blackUsername IS NULL";
+        } else{
+            throw new WhomstException("Unknown team");
+        }
 
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement setPlayerTeamStatement = conn.prepareStatement(setPlayerTeamSQL)) {
+            setPlayerTeamStatement.setString(1, username);
+            setPlayerTeamStatement.setInt(2, gameID);
+            System.out.println(setPlayerTeamStatement);
+            int rowsAffected = setPlayerTeamStatement.executeUpdate();
+            if(rowsAffected > 0) {
+                System.out.println("Team successfully set!");
+            } else {
+                System.out.println("Team setting unsuccessful");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error during setPlayerTeam" + e.getMessage());
+            throw new NonSuccessException("SQL Error during setPlayerTeam");
+        } catch (DataAccessException e) {
+            System.out.println("DataAccessError in setPlayerTeam");
+            throw new RuntimeException(e);
+        }
     }
 
     public void connect() throws SQLException, DataAccessException {
