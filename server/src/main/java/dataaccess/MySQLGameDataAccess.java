@@ -5,6 +5,7 @@ import model.GameData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
             System.out.println("Error during clearing Games Table.");
             throw new NonSuccessException("Error during clearing Games Table.");
         } catch (DataAccessException e) {
+            System.out.println("DataAccessError in clearAll");
             throw new RuntimeException(e);
         }
         return "";
@@ -33,7 +35,24 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
     @Override
     public Integer getGameIDByName(String gameName) {
-        return 0;
+        String findGameIDSQL = "SELECT gameID FROM Games WHERE gameName = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement createGameStatement = conn.prepareStatement(findGameIDSQL)) {
+            createGameStatement.setString(1, gameName);
+            ResultSet rs = createGameStatement.executeQuery();
+            if(rs.next()) {
+                return rs.getInt("gameID");
+            } else {
+                System.out.println("GameID not found");
+                return null;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error during getGameIDByName" + e.getMessage());
+            throw new NonSuccessException("Error during getGameIDByName");
+        } catch (DataAccessException e) {
+            System.out.println("DataAccessError in getGameIDByName");
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -71,6 +90,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
             System.out.println("Error during createGame" + e.getMessage());
             throw new NonSuccessException("Error during createGame");
         } catch (DataAccessException e) {
+            System.out.println("DataAccessError in createGame");
             throw new RuntimeException(e);
         }
     }
@@ -108,7 +128,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
                 gameID INT NOT NULL AUTO_INCREMENT,
                 whiteUsername VARCHAR(255),
                 blackUsername VARCHAR(255),
-                gameName VARCHAR(255) NOT NULL,
+                gameName VARCHAR(255) NOT NULL UNIQUE,
                 game longtext NOT NULL,
                 PRIMARY KEY (gameID)
             )""";

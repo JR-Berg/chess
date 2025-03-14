@@ -96,7 +96,9 @@ public class Server {
                 halt(400, "\"Error: bad request\"");
             } catch(BadAuthException e) { //Error 401, unauthorized
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
-            } //implement error 500
+            } catch(NonSuccessException e) { //Error 403, game name taken
+                halt(403, "{ \"message\": \"Error: already taken\" }");
+            }
             return ret;
         });
 
