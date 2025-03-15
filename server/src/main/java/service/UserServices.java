@@ -22,7 +22,7 @@ public class UserServices {
         this.gameDataAccess = gameDataAccess;
     }
 
-    public RegisterResult register(RegisterRequest registerRequest) {
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
         if(registerRequest.username() == null || registerRequest.email() == null || registerRequest.password() == null) {
             throw new BadDataException("Invalid input");
         }
@@ -42,7 +42,7 @@ public class UserServices {
         return "";
     }
 
-    public LoginResult login(LoginRequest loginRequest) {
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
         if(loginRequest.username() == null || loginRequest.password() == null) {
             throw new BadDataException("Not enough data!");
         }
@@ -60,7 +60,7 @@ public class UserServices {
         }
     }
 
-    public void logout(LogoutRequest logoutRequest) {
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException{
         if(logoutRequest.authToken() == null) {
             throw new BadDataException("No AuthToken!");
         }

@@ -12,22 +12,26 @@ import spark.*;
 import static spark.Spark.halt;
 
 public class Server {
+    UserDataAccess userDataAccess;
+    AuthDataAccess userAuthAccess;
+    GameDataAccess gameDataAccess;
+    UserServices userServices;
+    UserHandler userHandler;
+    GameServices gameServices;
+    GameHandler gameHandler;
+
+    private void initializeServices() throws DataAccessException {
+        userDataAccess = new MySQLUserDataAccess();
+        userAuthAccess = new MySQLAuthDataAccess();
+        gameDataAccess = new MySQLGameDataAccess();
+        userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
+        userHandler = new UserHandler(userServices);
+        gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
+        gameHandler = new GameHandler(gameServices);
+    }
     public int run(int desiredPort) {
-        UserDataAccess userDataAccess;
-        AuthDataAccess userAuthAccess;
-        GameDataAccess gameDataAccess;
-        UserServices userServices;
-        UserHandler userHandler;
-        GameServices gameServices;
-        GameHandler gameHandler;
         try {
-            userDataAccess = new MySQLUserDataAccess();
-            userAuthAccess = new MySQLAuthDataAccess();
-            gameDataAccess = new MySQLGameDataAccess();
-            userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
-            userHandler = new UserHandler(userServices);
-            gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
-            gameHandler = new GameHandler(gameServices);
+            initializeServices();
         } catch(DataAccessException e) {
             halt(500, "DataAccessException while instantiating Data Access classes.");
         }
@@ -47,7 +51,7 @@ public class Server {
             } catch(BadDataException e) { //Error 400, bad request (for example, didn't input enough data)
                 halt(400, "{ \"message\": \"Error: bad request\" }");
             } catch(DataAccessException e) {
-                halt(500, "{ \"message\": \"Error: (description of error)\" }");
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
             return ret;
         });
@@ -58,7 +62,7 @@ public class Server {
             try {
                 ret = clearApplication(userHandler);
             } catch(DataAccessException e) { //Error 500, server error
-                halt(500, "{ \"message\": \"Error: (description of error)\" }"); //Implement error 500
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }"); //Implement error 500
             }
             return ret;
         });
@@ -74,6 +78,8 @@ public class Server {
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
             } catch(BadDataException e) { //Error 400, not enough input probably
                 halt(400, "{ \"message\": \"Error: bad request\" }");
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
             return ret;
         });
@@ -85,6 +91,8 @@ public class Server {
                 ret = logoutUser(req.headers("authorization"), userHandler);
             } catch(BadAuthException e) { //Error 401, unauthorized (bad authToken)
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
             return ret;
         });
@@ -96,7 +104,9 @@ public class Server {
                 ret = listGames(req.headers("authorization"), gameHandler);
             } catch(BadAuthException e) { //Error 401, unauthorized (bad AuthToken)
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
-            } //Implement error 500
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
             return ret;
         });
 
@@ -111,6 +121,8 @@ public class Server {
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
             } catch(NonSuccessException e) { //Error 403, game name taken
                 halt(403, "{ \"message\": \"Error: already taken\" }");
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
             return ret;
         });
@@ -128,7 +140,9 @@ public class Server {
                 halt(403, "{ \"message\": \"Error: already taken\" }");
             } catch(WhomstException e) { //Error 400 again, attempted to join a bad team (like green)
                 halt(400, "{ \"message\": \"Error: bad request\" }");
-            }//Implement error 500
+            } catch(DataAccessException e) {
+                halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
+            }
             return ret;
         });
         //This line initializes the server and can be removed once you have a functioning endpoint
@@ -143,27 +157,27 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private String registerUser(String requestBody, UserHandler userHandler) {
+    private String registerUser(String requestBody, UserHandler userHandler) throws DataAccessException{
         return userHandler.registerUser(requestBody);
     }
     private String clearApplication(UserHandler userHandler) throws DataAccessException{
         userHandler.clearApplication();
         return "";
     }
-    private String loginUser(String requestBody, UserHandler userHandler) {
+    private String loginUser(String requestBody, UserHandler userHandler) throws DataAccessException{
         return userHandler.loginUser(requestBody);
     }
-    private String logoutUser(String requestHeader, UserHandler userHandler) {
+    private String logoutUser(String requestHeader, UserHandler userHandler) throws DataAccessException{
         userHandler.logoutUser(requestHeader);
         return "";
     }
-    private String listGames(String requestHeader, GameHandler gameHandler) {
+    private String listGames(String requestHeader, GameHandler gameHandler) throws DataAccessException{
         return gameHandler.listGames(requestHeader);
     }
-    private String createGame(String requestHeader, String requestBody, GameHandler gameHandler) {
+    private String createGame(String requestHeader, String requestBody, GameHandler gameHandler) throws DataAccessException{
         return gameHandler.createGame(requestHeader, requestBody);
     }
-    private String joinGame(String requestHeader, String requestBody, GameHandler gameHandler){
+    private String joinGame(String requestHeader, String requestBody, GameHandler gameHandler) throws DataAccessException{
         return gameHandler.joinGame(requestHeader, requestBody);
     }
 }

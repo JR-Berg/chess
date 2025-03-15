@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class MySQLUserDataAccess extends UserDataAccess{
     public MySQLUserDataAccess() throws DataAccessException {
@@ -113,8 +112,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
     public void connect() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try {
-            // Establish the connection and return it
-            Connection conn = DatabaseManager.getConnection();
+            DatabaseManager.getConnection();
             System.out.println("Connected to the database successfully!");
         } catch (DataAccessException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());

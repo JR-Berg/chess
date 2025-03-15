@@ -39,7 +39,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     }
 
     @Override
-    public AuthData createAuth(String username) {
+    public AuthData createAuth(String username) throws DataAccessException{
         String authToken = UUID.randomUUID().toString();
         String insertNewAuthSQL = "INSERT INTO Auth (authToken, username) VALUES (?, ?)" +
                 "ON DUPLICATE KEY UPDATE authToken = ?";
@@ -61,14 +61,12 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
 
         } catch (SQLException e) {
             System.out.println("Error during AuthToken creation");
-            throw new NonSuccessException("Error during AuthToken creation.");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
         String deleteAuthSQL = "DELETE FROM Auth WHERE authToken = ?";
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement deleteAuthStatement = conn.prepareStatement(deleteAuthSQL)) {
@@ -84,9 +82,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
 
         } catch (SQLException e) {
             System.out.println("Error during AuthToken deletion");
-            throw new NonSuccessException("Error during AuthToken deletion.");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
@@ -107,15 +103,15 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     public void connect() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try {
-            // Establish the connection and return it
-            Connection conn = DatabaseManager.getConnection();
+            DatabaseManager.getConnection();
             System.out.println("Connected to the database successfully!");
         } catch (DataAccessException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());
+            throw new DataAccessException("Database Connection failed.");
         }
     }
 
-    public void createTables() throws SQLException {
+    public void createTables() throws SQLException, DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
             createDbStatement.executeUpdate();
@@ -136,6 +132,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
             }
         } catch (DataAccessException e) {
             System.out.println("Error creating tables: " + e.getMessage());
+            throw new DataAccessException("Auth table creation failed.");
         }
     }
 }
