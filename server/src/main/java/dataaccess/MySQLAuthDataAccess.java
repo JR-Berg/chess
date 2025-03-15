@@ -100,7 +100,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
         return "";
     }
 
-    public void connect() throws SQLException, DataAccessException {
+    private void connect() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try {
             DatabaseManager.getConnection();
@@ -111,7 +111,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
         }
     }
 
-    public void createTables() throws SQLException, DataAccessException{
+    private void createTables() throws SQLException, DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
             createDbStatement.executeUpdate();

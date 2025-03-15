@@ -182,7 +182,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
         }
     }
 
-    public void connect() throws SQLException, DataAccessException {
+    private void connect() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try {
             DatabaseManager.getConnection();
@@ -192,7 +192,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
         }
     }
 
-    public void createTables() throws SQLException {
+    private void createTables() throws SQLException {
         try (var conn = DatabaseManager.getConnection()) {
             var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
             createDbStatement.executeUpdate();
