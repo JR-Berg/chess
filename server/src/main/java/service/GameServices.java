@@ -22,7 +22,7 @@ public class GameServices {
         this.gameDataAccess = gameDataAccess;
     }
 
-    public ListGamesResult listGames(ListGamesRequest listGamesRequest){
+    public ListGamesResult listGames(ListGamesRequest listGamesRequest) throws DataAccessException{
         if(listGamesRequest.authToken() == null) {
             throw new BadDataException("No AuthToken!");
         }
@@ -32,7 +32,7 @@ public class GameServices {
         return new ListGamesResult(gamesList);
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest) {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException{
         if(createGameRequest.gameName() == null || createGameRequest.authToken() == null) {
             throw new BadDataException("Not enough data!");
         }
@@ -47,7 +47,7 @@ public class GameServices {
         gameDataAccess.createGame(newGameID, newGame);
         return new CreateGameResult(newGameID, true);
     }
-    public JoinGameResult joinGame(JoinGameRequest joinGameRequest) {
+    public JoinGameResult joinGame(JoinGameRequest joinGameRequest) throws DataAccessException{
         if(joinGameRequest.gameID() == null || joinGameRequest.authToken() == null || joinGameRequest.playerColor() == null) {
             throw new BadDataException("Not enough data!");
         }
@@ -61,7 +61,7 @@ public class GameServices {
         return new JoinGameResult(true);
     }
 
-    private AuthData checkAuth(String authToken){
+    private AuthData checkAuth(String authToken) throws DataAccessException{
         AuthData auth = authDataAccess.getAuth(authToken);
         if(auth == null) {
             throw new BadAuthException("AuthData invalid!");

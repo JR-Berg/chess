@@ -98,7 +98,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
     }
 
     @Override
-    public void createGame(Integer newGameID, GameData newGame) {
+    public void createGame(Integer newGameID, GameData newGame) throws DataAccessException{
 
         String insertGameSQL = "INSERT INTO Games (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
@@ -117,16 +117,13 @@ public class MySQLGameDataAccess extends GameDataAccess{
                 System.out.println("Game not created :(");
             }
         } catch (SQLException e) {
-            System.out.println("Error during createGame" + e.getMessage());
-            throw new NonSuccessException("Error during createGame");
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessError in createGame");
-            throw new RuntimeException(e);
+            System.out.println("Error during createGame");
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public GameData getGame(Integer gameID) {
+    public GameData getGame(Integer gameID) throws DataAccessException {
         String findGameSQL = "SELECT * FROM Games WHERE gameID = ?";
         Gson gson = new Gson();
         try (Connection conn = DatabaseManager.getConnection();
@@ -146,14 +143,13 @@ public class MySQLGameDataAccess extends GameDataAccess{
             }
         } catch (SQLException e) {
             System.out.println("SQLException in getGame: " + e.getMessage());
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return null;
     }
 
     @Override
-    public void setPlayerTeam(Integer gameID, String username, String teamColor) {
+    public void setPlayerTeam(Integer gameID, String username, String teamColor) throws DataAccessException{
         String setPlayerTeamSQL;
         if(Objects.equals(teamColor, "WHITE")) {
             setPlayerTeamSQL = "UPDATE Games SET whiteUsername = ? WHERE gameID = ? AND whiteUsername IS NULL";
@@ -177,10 +173,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
         } catch (SQLException e) {
             System.out.println("Error during setPlayerTeam" + e.getMessage());
-            throw new NonSuccessException("SQL Error during setPlayerTeam");
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessError in setPlayerTeam");
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 

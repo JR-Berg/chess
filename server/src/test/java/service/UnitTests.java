@@ -26,14 +26,14 @@ public class UnitTests {
         gameServices = new GameServices(mockUserDataAccess, mockAuthDataAccess, mockGameDataAccess);
     }
     @AfterEach
-    public void clearStuff() {
+    public void clearStuff() throws DataAccessException{
         userServices.clearAll();
     }
 
 
     @Test
     @Order(1)
-    public void testRegister() {
+    public void testRegister() throws DataAccessException{
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -42,7 +42,7 @@ public class UnitTests {
 
     @Test
     @Order(2)
-    public void testFailRegister() {
+    public void testFailRegister() throws DataAccessException{
         //Set up 3 register requests, register first 2 users.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -65,7 +65,7 @@ public class UnitTests {
 
     @Test
     @Order(3)
-    public void testClear() {
+    public void testClear() throws DataAccessException{
         //Register 2 users.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -90,7 +90,7 @@ public class UnitTests {
 
     @Test
     @Order(4)
-    public void testLogin() {
+    public void testLogin() throws DataAccessException{
         //Register 2 users, ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -107,7 +107,7 @@ public class UnitTests {
 
     @Test
     @Order(5)
-    public void testBadLogin() {
+    public void testBadLogin() throws DataAccessException{
         //Register 2 users, ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -133,7 +133,7 @@ public class UnitTests {
 
     @Test
     @Order(6)
-    public void testLogout() {
+    public void testLogout() throws DataAccessException{
         //Register 2 users and ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -162,7 +162,7 @@ public class UnitTests {
 
     @Test
     @Order(7)
-    public void testBadLogout() {
+    public void testBadLogout() throws DataAccessException{
         //Register 2 users and ensure they were registered properly.
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterRequest request2 = new RegisterRequest("test2user", "password", "test@example.com");
@@ -200,7 +200,7 @@ public class UnitTests {
 
     @Test
     @Order(8)
-    public void testEmptyListGame() {
+    public void testEmptyListGame() throws DataAccessException{
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -220,7 +220,7 @@ public class UnitTests {
 
     @Test
     @Order(9)
-    public void testUnauthorizedListGame() {
+    public void testUnauthorizedListGame() throws DataAccessException{
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -236,7 +236,7 @@ public class UnitTests {
         }
     }
     @Test
-    public void testCreateGame() {
+    public void testCreateGame() throws DataAccessException{
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -251,7 +251,7 @@ public class UnitTests {
 
     @Test
     @Order(10)
-    public void testCreateBadGame() {
+    public void testCreateBadGame() throws DataAccessException{
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -277,7 +277,7 @@ public class UnitTests {
 
     @Test
     @Order(12)
-    public void testListGamesIncrease() {
+    public void testListGamesIncrease() throws DataAccessException{
         //Register one user, ensure user was registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -320,7 +320,7 @@ public class UnitTests {
 
     @Test
     @Order(13)
-    public void testJoinGame() {
+    public void testJoinGame() throws DataAccessException{
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);
@@ -345,7 +345,7 @@ public class UnitTests {
 
     @Test
     @Order(14)
-    public void testBadJoinGame() {
+    public void testBadJoinGame() throws DataAccessException{
         //Register a user and confirm they were registered
         RegisterRequest request = new RegisterRequest("testUser", "password", "test@example.com");
         RegisterResult result = userServices.register(request);

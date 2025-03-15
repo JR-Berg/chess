@@ -11,9 +11,9 @@ public abstract class GameDataAccess {
 
     public abstract Integer generateGameID();
 
-    public abstract void createGame(Integer newGameID, GameData newGame);
+    public abstract void createGame(Integer newGameID, GameData newGame) throws DataAccessException;
 
-    public abstract GameData getGame(Integer gameID);
+    public abstract GameData getGame(Integer gameID) throws DataAccessException;
 
-    public abstract void setPlayerTeam(Integer gameID, String username, String teamColor);
+    public abstract void setPlayerTeam(Integer gameID, String username, String teamColor) throws DataAccessException;
 }
