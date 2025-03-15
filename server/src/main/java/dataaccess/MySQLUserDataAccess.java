@@ -19,7 +19,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
     }
 
     @Override
-    public UserData createUser(String username, String password, String email) {
+    public UserData createUser(String username, String password, String email) throws DataAccessException{
         if (checkUsername(username) != null) {
             System.out.println("Username is already taken.");
             throw new NonSuccessException("Username is already taken.");
@@ -50,14 +50,12 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
         } catch (SQLException e) {
             System.out.println("Error during registration: " + e.getMessage());
-            throw new NonSuccessException("Error during registration");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws DataAccessException{
         return checkUsername(username);
     }
 
@@ -76,7 +74,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
     }
 
     @Override
-    public Boolean checkPassword(String username, String providedClearTextPassword) {
+    public Boolean checkPassword(String username, String providedClearTextPassword) throws DataAccessException{
         UserData userData = checkUsername(username);
         if(userData == null) {
             return false;
@@ -85,7 +83,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
-    private UserData checkUsername(String username) {
+    private UserData checkUsername(String username) throws DataAccessException{
         String checkUsernameSQL = "SELECT * FROM Users WHERE username = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -101,8 +99,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
         } catch (SQLException e) {
             System.out.println("Error checking username availability: " + e.getMessage());
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
 
         return null;  // Username does not exist

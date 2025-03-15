@@ -19,7 +19,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     }
 
     @Override
-    public AuthData getAuth(String authToken) {
+    public AuthData getAuth(String authToken) throws DataAccessException{
         String checkAuthSQL = "SELECT * FROM Auth WHERE authToken = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement checkAuthStatement = conn.prepareStatement(checkAuthSQL)) {
@@ -31,8 +31,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessException: " + e.getMessage());
+            throw new DataAccessException(e.getMessage());
         }
         System.out.println("AuthToken does not exist.");
         return null;

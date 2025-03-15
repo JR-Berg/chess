@@ -68,7 +68,7 @@ public class UserServices {
         authDataAccess.deleteAuth(auth.authToken());
     }
 
-    private AuthData checkAuth(String authToken){
+    private AuthData checkAuth(String authToken) throws DataAccessException{
         AuthData auth = authDataAccess.getAuth(authToken);
         if(auth == null) {
             throw new BadAuthException("AuthData invalid!");
