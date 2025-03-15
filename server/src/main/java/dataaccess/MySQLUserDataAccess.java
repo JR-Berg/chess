@@ -117,11 +117,6 @@ public class MySQLUserDataAccess extends UserDataAccess{
 
     private void createTables() throws SQLException {
         try (var conn = DatabaseManager.getConnection()) {
-            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
-            createDbStatement.executeUpdate();
-
-            conn.setCatalog("chess");
-
             var createUsersTable = """
             CREATE TABLE IF NOT EXISTS Users (
                 username VARCHAR(255) NOT NULL UNIQUE,

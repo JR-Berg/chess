@@ -40,14 +40,12 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
     @Override
     public AuthData createAuth(String username) throws DataAccessException{
         String authToken = UUID.randomUUID().toString();
-        String insertNewAuthSQL = "INSERT INTO Auth (authToken, username) VALUES (?, ?)" +
-                "ON DUPLICATE KEY UPDATE authToken = ?";
+        String insertNewAuthSQL = "INSERT INTO Auth (authToken, username) VALUES (?, ?)";
         AuthData authData = new AuthData(authToken, username);
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement createAuthStatement = conn.prepareStatement(insertNewAuthSQL)) {
             createAuthStatement.setString(1, authToken);
             createAuthStatement.setString(2, username);
-            createAuthStatement.setString(3, authToken);
 
             int rowsAffected = createAuthStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -112,16 +110,11 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
 
     private void createTables() throws SQLException, DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
-            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
-            createDbStatement.executeUpdate();
-
-            conn.setCatalog("chess");
-
             var createAuthTable = """
             CREATE TABLE IF NOT EXISTS Auth (
-                authToken VARCHAR(255) NOT NULL,
-                username VARCHAR(255) NOT NULL UNIQUE,
-                PRIMARY KEY(username)
+                authToken VARCHAR(255) NOT NULL UNIQUE,
+                username VARCHAR(255) NOT NULL,
+                PRIMARY KEY(authToken)
             )""";
 
 

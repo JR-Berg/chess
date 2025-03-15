@@ -52,7 +52,9 @@ public class DataAccessUnitTests {
         String password = "password"; //Do not use this as your password ever please
         String email = "email@email.com";
         try {
+            assertNotNull(fakeUserSQL.createUser("mafton", "bite0f87!?", "email"));
             assertNotNull(fakeUserSQL.createUser(username, password, email));
+            System.out.println("Success!");
         } catch (DataAccessException e) {
             fail("DataAccessException :c");
         }

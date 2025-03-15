@@ -174,6 +174,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
                 System.out.println("Team successfully set!");
             } else {
                 System.out.println("Team setting unsuccessful");
+                throw new OverlapException("User attempted to join non-null team");
             }
 
         } catch (SQLException e) {
@@ -194,11 +195,6 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
     private void createTables() throws SQLException {
         try (var conn = DatabaseManager.getConnection()) {
-            var createDbStatement = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS chess");
-            createDbStatement.executeUpdate();
-
-            conn.setCatalog("chess");
-
             var createGamesTable = """
             CREATE TABLE IF NOT EXISTS Games (
                 gameID INT NOT NULL AUTO_INCREMENT,
