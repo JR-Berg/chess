@@ -301,14 +301,14 @@ public class DataAccessUnitTests {
     @Order(20)
     public void goodGenerateID() {
         try{
-            int ID = fakeGameSQL.generateGameID();
+            int id = fakeGameSQL.generateGameID();
             ChessGame chessGame = new ChessGame();
-            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
-            fakeGameSQL.createGame(ID, gameData);
+            GameData gameData = new GameData(id, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(id, gameData);
             ChessGame theSequel = new ChessGame();
-            int ID2 = fakeGameSQL.generateGameID();
-            GameData moreData = new GameData(ID2, null, null, "boogaloo", theSequel);
-            fakeGameSQL.createGame(ID2, moreData);
+            int id2 = fakeGameSQL.generateGameID();
+            GameData moreData = new GameData(id2, null, null, "boogaloo", theSequel);
+            fakeGameSQL.createGame(id2, moreData);
             assertEquals(1, gameData.gameID());
             assertEquals(2, moreData.gameID());
         } catch (DataAccessException e) {
@@ -321,12 +321,12 @@ public class DataAccessUnitTests {
     public void goodSetPlayerTeam() {
         try{
             fakeUserSQL.createUser("username", "password", "email");
-            int ID = fakeGameSQL.generateGameID();
+            int id = fakeGameSQL.generateGameID();
             ChessGame chessGame = new ChessGame();
-            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
-            fakeGameSQL.createGame(ID, gameData);
-            fakeGameSQL.setPlayerTeam(ID, "username", "WHITE");
-            gameData = fakeGameSQL.getGame(ID);
+            GameData gameData = new GameData(id, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(id, gameData);
+            fakeGameSQL.setPlayerTeam(id, "username", "WHITE");
+            gameData = fakeGameSQL.getGame(id);
             assertEquals("username", gameData.whiteUsername());
         } catch (DataAccessException e) {
             fail("DataAccessException :C");
@@ -338,11 +338,11 @@ public class DataAccessUnitTests {
     public void badSetPlayerTeam() {
         try{
             fakeUserSQL.createUser("username", "password", "email");
-            int ID = fakeGameSQL.generateGameID();
+            int id = fakeGameSQL.generateGameID();
             ChessGame chessGame = new ChessGame();
-            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
-            fakeGameSQL.createGame(ID, gameData);
-            fakeGameSQL.setPlayerTeam(ID, "username", "YELLOW");
+            GameData gameData = new GameData(id, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(id, gameData);
+            fakeGameSQL.setPlayerTeam(id, "username", "YELLOW");
         } catch (DataAccessException e) {
             fail("DataAccessException :C");
         } catch (WhomstException e) {
