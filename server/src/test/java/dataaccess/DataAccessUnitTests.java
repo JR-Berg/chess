@@ -3,7 +3,6 @@ package dataaccess;
 import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -325,8 +324,27 @@ public class DataAccessUnitTests {
             GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
             fakeGameSQL.createGame(ID, gameData);
             fakeGameSQL.setPlayerTeam(ID, "username", "WHITE");
+            gameData = fakeGameSQL.getGame(ID);
+            assertEquals("username", gameData.whiteUsername());
         } catch (DataAccessException e) {
             fail("DataAccessException :C");
+        }
+    }
+
+    @Test
+    @Order(22)
+    public void BadSetPlayerTeam() {
+        try{
+            fakeUserSQL.createUser("username", "password", "email");
+            int ID = fakeGameSQL.generateGameID();
+            ChessGame chessGame = new ChessGame();
+            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(ID, gameData);
+            fakeGameSQL.setPlayerTeam(ID, "username", "YELLOW");
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        } catch (WhomstException e) {
+            assertEquals("Unknown team", e.getMessage());
         }
     }
 }
