@@ -296,4 +296,37 @@ public class DataAccessUnitTests {
         }
     }
 
+    @Test
+    @Order(20)
+    public void GoodGenerateID() {
+        try{
+            int ID = fakeGameSQL.generateGameID();
+            ChessGame chessGame = new ChessGame();
+            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(ID, gameData);
+            ChessGame theSequel = new ChessGame();
+            int ID2 = fakeGameSQL.generateGameID();
+            GameData moreData = new GameData(ID2, null, null, "boogaloo", theSequel);
+            fakeGameSQL.createGame(ID2, moreData);
+            assertEquals(1, gameData.gameID());
+            assertEquals(2, moreData.gameID());
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
+
+    @Test
+    @Order(21)
+    public void GoodSetPlayerTeam() {
+        try{
+            fakeUserSQL.createUser("username", "password", "email");
+            int ID = fakeGameSQL.generateGameID();
+            ChessGame chessGame = new ChessGame();
+            GameData gameData = new GameData(ID, null, null, "showdown", chessGame);
+            fakeGameSQL.createGame(ID, gameData);
+            fakeGameSQL.setPlayerTeam(ID, "username", "WHITE");
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
 }
