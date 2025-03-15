@@ -34,7 +34,7 @@ public class DataAccessUnitTests {
     }
 
     @BeforeEach
-    public void ClearAll() {
+    public void clearAll() {
         try {
             fakeUserSQL.clearAll();
             fakeAuthSQL.clearAll();
@@ -47,7 +47,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(1)
-    public void GoodRegister() { //tests createUser
+    public void goodRegister() { //tests createUser
         String username = "username";
         String password = "password"; //Do not use this as your password ever please
         String email = "email@email.com";
@@ -62,7 +62,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(2)
-    public void BadRegister() { //tests createUser
+    public void badRegister() { //tests createUser
         String username = "username";
         String password = "password";
         String email = "email@email.com";
@@ -79,7 +79,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(3)
-    public void GoodPassword() { //tests checkPassword
+    public void goodPassword() { //tests checkPassword
         try {
             fakeUserSQL.createUser("username", "password", "email");
             assertTrue(fakeUserSQL.checkPassword("username", "password"));
@@ -90,7 +90,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(4)
-    public void GoodUser() {
+    public void goodUser() {
         try {
             fakeUserSQL.createUser("username", "password", "email");
             fakeUserSQL.getUser("username");
@@ -101,7 +101,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(5)
-    public void FakeUser() { //tests getUser
+    public void fakeUser() { //tests getUser
         try {
             fakeUserSQL.createUser("username", "password", "email");
             assertNull(fakeUserSQL.getUser("slenderman"));
@@ -112,7 +112,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(6)
-    public void BadLogin() { //tests checkPassword
+    public void badLogin() { //tests checkPassword
         try {
             fakeUserSQL.createUser("username", "password", "email");
             assertFalse(fakeUserSQL.checkPassword("username", "b3773rPassw0rd??"));
@@ -123,7 +123,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(7)
-    public void GoodAuth() { //tests createAuth
+    public void goodAuth() { //tests createAuth
         try {
             fakeUserSQL.createUser("username", "password", "email");
             AuthData authData = fakeAuthSQL.createAuth("username");
@@ -140,7 +140,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(8)
-    public void GoodAuthRetrieval() { //tests getAuth
+    public void goodAuthRetrieval() { //tests getAuth
         try {
             fakeUserSQL.createUser("username", "password", "email");
             AuthData authData = fakeAuthSQL.createAuth("username");
@@ -152,7 +152,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(9)
-    public void BadAuthRetrieval() { //Tests getAuth
+    public void badAuthRetrieval() { //Tests getAuth
         try {
             assertNull(fakeAuthSQL.getAuth("bwompus"));
         } catch (DataAccessException e) {
@@ -164,7 +164,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(10)
-    public void GoodAuthDelete() { //tests deleteAuth
+    public void goodAuthDelete() { //tests deleteAuth
         try{
             fakeUserSQL.createUser("username", "password", "email");
             AuthData authData = fakeAuthSQL.createAuth("username");
@@ -177,7 +177,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(11)
-    public void BadAuthDelete() { //tests deleteAuth
+    public void badAuthDelete() { //tests deleteAuth
         try{
             fakeUserSQL.createUser("username", "password", "email");
             AuthData authData = fakeAuthSQL.createAuth("username");
@@ -193,7 +193,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(12)
-    public void GoodCreateGame() { //tests createGame
+    public void goodCreateGame() { //tests createGame
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(1, null, null, "showdown", chessGame);
         try {
@@ -207,7 +207,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(13)
-    public void BadCreateGame() { //tests createGame
+    public void badCreateGame() { //tests createGame
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(1, null, null, "showdown", chessGame);
         GameData gamerData = new GameData(2, null, null, "showdown", chessGame);
@@ -222,7 +222,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(14)
-    public void GoodGetGame() {
+    public void goodGetGame() {
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(1, null, null, "showdown", chessGame);
         try{
@@ -236,7 +236,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(15)
-    public void BadGetGame() {
+    public void badGetGame() {
         try {
             GameData getGameData = fakeGameSQL.getGame(1);
             assertNull(getGameData);
@@ -247,7 +247,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(16)
-    public void GoodGetNameByID() {
+    public void goodGetNameByID() {
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(1, null, null, "showdown", chessGame);
         try{
@@ -261,7 +261,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(17)
-    public void BadGetNameByID() {
+    public void badGetNameByID() {
         try{
             assertNull(fakeGameSQL.getGameIDByName("showdown"));
         } catch (DataAccessException e) {
@@ -271,7 +271,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(18)
-    public void GoodListGames() {
+    public void goodListGames() {
         ChessGame chessGame = new ChessGame();
         GameData gameData = new GameData(1, null, null, "showdown", chessGame);
         ChessGame theSequel = new ChessGame();
@@ -288,7 +288,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(19)
-    public void BadListGames() {
+    public void badListGames() {
         try{
             Map<Integer, GameData> gamesList = fakeGameSQL.listGames();
             assertTrue(gamesList.isEmpty());
@@ -299,7 +299,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(20)
-    public void GoodGenerateID() {
+    public void goodGenerateID() {
         try{
             int ID = fakeGameSQL.generateGameID();
             ChessGame chessGame = new ChessGame();
@@ -318,7 +318,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(21)
-    public void GoodSetPlayerTeam() {
+    public void goodSetPlayerTeam() {
         try{
             fakeUserSQL.createUser("username", "password", "email");
             int ID = fakeGameSQL.generateGameID();
@@ -335,7 +335,7 @@ public class DataAccessUnitTests {
 
     @Test
     @Order(22)
-    public void BadSetPlayerTeam() {
+    public void badSetPlayerTeam() {
         try{
             fakeUserSQL.createUser("username", "password", "email");
             int ID = fakeGameSQL.generateGameID();
