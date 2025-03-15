@@ -58,7 +58,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
     @Override
     public Map<Integer, GameData> listGames() throws DataAccessException{
         HashMap<Integer, GameData> games = new HashMap<>();
-        String getGamesSQL = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
+        String getGamesSQL = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM Games";
         Gson gson = new Gson();
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(getGamesSQL);
