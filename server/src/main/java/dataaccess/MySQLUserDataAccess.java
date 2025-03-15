@@ -82,7 +82,6 @@ public class MySQLUserDataAccess extends UserDataAccess{
             return false;
         }
         String hashedPassword = userData.password();
-        System.out.println("Logged in successfully!");
         return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 
