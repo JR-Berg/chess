@@ -109,7 +109,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
         DatabaseManager.createDatabase();
         try {
             DatabaseManager.getConnection();
-            System.out.println("Connected to the database successfully!");
+            System.out.println("Users connected to the database successfully!");
         } catch (DataAccessException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());
         }

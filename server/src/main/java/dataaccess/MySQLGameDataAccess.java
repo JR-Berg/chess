@@ -4,10 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -187,7 +184,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
         DatabaseManager.createDatabase();
         try {
             DatabaseManager.getConnection();
-            System.out.println("Connected to the database successfully!");
+            System.out.println("Games connected to the database successfully!");
         } catch (DataAccessException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());
         }

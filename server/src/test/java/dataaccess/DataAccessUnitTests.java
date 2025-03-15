@@ -216,7 +216,7 @@ public class DataAccessUnitTests {
             fakeGameSQL.createGame(2, gamerData);
             fail("Expected DataAccessException from duplicate gameName");
         }catch(DataAccessException e) {
-            assertEquals("Duplicate entry 'showdown' for key 'games.gameName'", e.getMessage());
+            assertEquals("Duplicate entry 'showdown' for key 'Games.gameName'", e.getMessage());
         }
     }
 

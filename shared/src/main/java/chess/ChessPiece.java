@@ -218,8 +218,9 @@ public class ChessPiece {
                 }
                 ChessPosition newPos = new ChessPosition(newRow, newCol);
                 if (board.getPiece(newPos) != null) {
-                    if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
-                        hasCheck = true;
+                    if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        if(board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                            hasCheck = true;
                     }//In case test cases force me to identify that both kings are in check with each other.
 
                         movesList.add(new ChessMove(myPosition, newPos, null));
@@ -353,4 +354,9 @@ public class ChessPiece {
         }
         return movesList;
     }
+
+//    private Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList,
+//                                             Boolean hop, int[] directionRow, int[] directionColumn) {
+//
+//    }
 }

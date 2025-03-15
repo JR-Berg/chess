@@ -101,7 +101,7 @@ public class MySQLAuthDataAccess extends AuthDataAccess {
         DatabaseManager.createDatabase();
         try {
             DatabaseManager.getConnection();
-            System.out.println("Connected to the database successfully!");
+            System.out.println("Auth connected to the database successfully!");
         } catch (DataAccessException e) {
             System.out.println("Error connecting to the database: " + e.getMessage());
             throw new DataAccessException("Database Connection failed.");

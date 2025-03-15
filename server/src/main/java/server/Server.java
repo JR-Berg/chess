@@ -39,10 +39,7 @@ public class Server {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
-
-        //Register function
-        Spark.post("/user", (req, res) -> {
+        Spark.post("/user", (req, res) -> { //Register function
             String ret = "";
             try {
                 ret = registerUser(req.body(), userHandler);
@@ -55,9 +52,7 @@ public class Server {
             }
             return ret;
         });
-
-        //Clear Application
-        Spark.delete("/db", (req, res) -> {
+        Spark.delete("/db", (req, res) -> { //Clear Application
             String ret = "";
             try {
                 ret = clearApplication(userHandler);
@@ -66,16 +61,12 @@ public class Server {
             }
             return ret;
         });
-
-        //Login
-        Spark.post("/session", (req, res) -> {
+        Spark.post("/session", (req, res) -> { //Login
             String ret = "";
             try {
                 ret = loginUser(req.body(), userHandler);
-            } catch(NonSuccessException e) { //Error 401, unauthorized (bad authToken)
+            } catch(NonSuccessException | WhomstException e) { //Error 401, unauthorized (bad authToken)
                 halt(401,"{ \"message\": \"Error: unauthorized\" }");
-            } catch(WhomstException e) { //Also error 401, but wrong password
-                halt(401, "{ \"message\": \"Error: unauthorized\" }");
             } catch(BadDataException e) { //Error 400, not enough input probably
                 halt(400, "{ \"message\": \"Error: bad request\" }");
             } catch(DataAccessException e) {
@@ -83,9 +74,7 @@ public class Server {
             }
             return ret;
         });
-
-        //Logout
-        Spark.delete("/session", (req, res) -> {
+        Spark.delete("/session", (req, res) -> { //Logout
             String ret = "";
             try {
                 ret = logoutUser(req.headers("authorization"), userHandler);
@@ -96,9 +85,7 @@ public class Server {
             }
             return ret;
         });
-
-        //List games
-        Spark.get("/game", (req, res) -> {
+        Spark.get("/game", (req, res) -> { //List games
             String ret = "";
             try {
                 ret = listGames(req.headers("authorization"), gameHandler);
@@ -109,9 +96,7 @@ public class Server {
             }
             return ret;
         });
-
-        //Create Game
-        Spark.post("/game", (req, res) -> {
+        Spark.post("/game", (req, res) -> { //Create Game
             String ret = "";
             try {
                 ret = createGame(req.headers("authorization"), req.body(), gameHandler);
@@ -126,28 +111,21 @@ public class Server {
             }
             return ret;
         });
-
-        //Join game
-        Spark.put("/game", (req, res) -> {
+        Spark.put("/game", (req, res) -> { //Join game
             String ret = "";
             try {
                 ret = joinGame(req.headers("authorization"), req.body(), gameHandler);
-            } catch(BadDataException e) { //Error 400, bad request (like not enough data input)
+            } catch(BadDataException | WhomstException e) { //Error 400, bad request (like not enough data input)
                 halt(400, "{ \"message\": \"Error: bad request\" }");
             } catch(BadAuthException e) { //Error 401, unauthorized (bad AuthData)
                 halt(401, "{ \"message\": \"Error: unauthorized\" }");
             } catch(OverlapException e) { //Error 403, attempted to join team already taken
                 halt(403, "{ \"message\": \"Error: already taken\" }");
-            } catch(WhomstException e) { //Error 400 again, attempted to join a bad team (like green)
-                halt(400, "{ \"message\": \"Error: bad request\" }");
             } catch(DataAccessException e) {
                 halt(500, "{ \"message\": \"Error: " + e.getMessage() + "\" }");
             }
             return ret;
         });
-        //This line initializes the server and can be removed once you have a functioning endpoint
-        Spark.init();
-
         Spark.awaitInitialization();
         return Spark.port();
     }
