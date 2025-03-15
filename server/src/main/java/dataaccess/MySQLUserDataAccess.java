@@ -10,9 +10,13 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class MySQLUserDataAccess extends UserDataAccess{
-    public MySQLUserDataAccess() throws SQLException, DataAccessException {
-        connect();
-        createTables();
+    public MySQLUserDataAccess() throws DataAccessException {
+        try {
+            connect();
+            createTables();
+        } catch(SQLException | DataAccessException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -59,7 +63,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
     }
 
     @Override
-    public String clearAll() {
+    public String clearAll() throws DataAccessException{
         String clearTableSQL = "TRUNCATE TABLE Users";
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement deleteUsersStatement = conn.prepareStatement(clearTableSQL)) {
@@ -67,9 +71,7 @@ public class MySQLUserDataAccess extends UserDataAccess{
             System.out.println("Users Table deleted successfully!");
         } catch (SQLException e) {
             System.out.println("Error during clearing Users Table.");
-            throw new NonSuccessException("Error during clearing Users Table.");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return "";
     }

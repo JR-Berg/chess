@@ -14,24 +14,24 @@ import java.util.Objects;
 
 public class MySQLGameDataAccess extends GameDataAccess{
 
-    public MySQLGameDataAccess() throws SQLException, DataAccessException {
-        connect();
-        createTables();
+    public MySQLGameDataAccess() throws DataAccessException {
+        try {
+            connect();
+            createTables();
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public String clearAll() {
+    public String clearAll() throws DataAccessException {
         String clearTableSQL = "TRUNCATE TABLE Games";
         try(Connection conn = DatabaseManager.getConnection();
             PreparedStatement deleteUsersStatement = conn.prepareStatement(clearTableSQL)) {
             deleteUsersStatement.executeUpdate();
             System.out.println("Games Table deleted successfully!");
         } catch (SQLException e) {
-            System.out.println("Error during clearing Games Table.");
-            throw new NonSuccessException("Error during clearing Games Table.");
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessError in clearAll");
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return "";
     }

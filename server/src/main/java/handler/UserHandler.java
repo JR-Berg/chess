@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
@@ -20,7 +21,7 @@ public class UserHandler {
         RegisterResult registerResult = userServices.register(registerRequest);
         return serializer.toJson(registerResult);
     }
-    public void clearApplication() {
+    public void clearApplication() throws DataAccessException {
         userServices.clearAll();
     }
     public String loginUser(String requestBody) {

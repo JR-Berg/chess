@@ -13,11 +13,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class UserServices {
-    private static Boolean isDatabaseTested = false;
     private final UserDataAccess userDataAccess;
     private final AuthDataAccess authDataAccess;
     private final GameDataAccess gameDataAccess;
-    public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) throws SQLException {
+    public UserServices(UserDataAccess userDataAccess, AuthDataAccess authDataAccess, GameDataAccess gameDataAccess) {
         this.userDataAccess = userDataAccess;
         this.authDataAccess = authDataAccess;
         this.gameDataAccess = gameDataAccess;
@@ -36,7 +35,7 @@ public class UserServices {
         return new RegisterResult(user.username(), auth.authToken());
     }
 
-    public String clearAll() {
+    public String clearAll() throws DataAccessException{
         userDataAccess.clearAll();
         authDataAccess.clearAll();
         gameDataAccess.clearAll();

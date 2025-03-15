@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Map;
 
 public abstract class GameDataAccess {
-    public abstract String clearAll();
+    public abstract String clearAll() throws DataAccessException;
     public abstract Integer getGameIDByName(String gameName);
     public abstract Map<Integer, GameData> listGames();
 

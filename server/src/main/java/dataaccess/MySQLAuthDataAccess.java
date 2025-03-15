@@ -9,9 +9,13 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class MySQLAuthDataAccess extends AuthDataAccess {
-    public MySQLAuthDataAccess() throws SQLException, DataAccessException {
-        connect();
-        createTables();
+    public MySQLAuthDataAccess() throws DataAccessException {
+        try {
+            connect();
+            createTables();
+        } catch(SQLException | DataAccessException e) {
+           throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override

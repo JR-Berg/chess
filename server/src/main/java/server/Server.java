@@ -7,19 +7,30 @@ import service.GameServices;
 import service.UserServices;
 import spark.*;
 
-import java.sql.SQLException;
+
 
 import static spark.Spark.halt;
 
 public class Server {
     public int run(int desiredPort) {
-        UserDataAccess userDataAccess = new MySQLUserDataAccess();
-        AuthDataAccess userAuthAccess = new MySQLAuthDataAccess();
-        GameDataAccess gameDataAccess = new MySQLGameDataAccess();
-        UserServices userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
-        UserHandler userHandler = new UserHandler(userServices);
-        GameServices gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
-        GameHandler gameHandler = new GameHandler(gameServices);
+        UserDataAccess userDataAccess;
+        AuthDataAccess userAuthAccess;
+        GameDataAccess gameDataAccess;
+        UserServices userServices;
+        UserHandler userHandler;
+        GameServices gameServices;
+        GameHandler gameHandler;
+        try {
+            userDataAccess = new MySQLUserDataAccess();
+            userAuthAccess = new MySQLAuthDataAccess();
+            gameDataAccess = new MySQLGameDataAccess();
+            userServices = new UserServices(userDataAccess, userAuthAccess, gameDataAccess);
+            userHandler = new UserHandler(userServices);
+            gameServices = new GameServices(userDataAccess, userAuthAccess, gameDataAccess);
+            gameHandler = new GameHandler(gameServices);
+        } catch(DataAccessException e) {
+            halt(500, "DataAccessException while instantiating Data Access classes.");
+        }
 
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
@@ -135,7 +146,7 @@ public class Server {
     private String registerUser(String requestBody, UserHandler userHandler) {
         return userHandler.registerUser(requestBody);
     }
-    private String clearApplication(UserHandler userHandler) {
+    private String clearApplication(UserHandler userHandler) throws DataAccessException{
         userHandler.clearApplication();
         return "";
     }
