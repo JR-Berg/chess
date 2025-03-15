@@ -37,7 +37,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
     }
 
     @Override
-    public Integer getGameIDByName(String gameName) {
+    public Integer getGameIDByName(String gameName) throws DataAccessException{
         String findGameIDSQL = "SELECT gameID FROM Games WHERE gameName = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement createGameStatement = conn.prepareStatement(findGameIDSQL)) {
@@ -51,15 +51,12 @@ public class MySQLGameDataAccess extends GameDataAccess{
             }
         } catch (SQLException e) {
             System.out.println("Error during getGameIDByName" + e.getMessage());
-            throw new NonSuccessException("Error during getGameIDByName");
-        } catch (DataAccessException e) {
-            System.out.println("DataAccessError in getGameIDByName");
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public Map<Integer, GameData> listGames() {
+    public Map<Integer, GameData> listGames() throws DataAccessException{
         HashMap<Integer, GameData> games = new HashMap<>();
         String getGamesSQL = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
         Gson gson = new Gson();
@@ -82,19 +79,27 @@ public class MySQLGameDataAccess extends GameDataAccess{
 
         } catch (SQLException e) {
             System.out.println("Error retrieving games: " + e.getMessage());
-        } catch(DataAccessException e) {
-            System.out.println("DataAccessException in listGames");
-            throw new NonSuccessException("DataAccessException in listGames");
+            throw new DataAccessException(e.getMessage());
         }
 
         return games;
     }
 
     @Override
-    public Integer generateGameID() {
-        return 0;
-        //This function is unnecessary for my SQL implementation, but needs to
-        //Remain here so I can swap from Memory Data to SQL seamlessly.
+    public Integer generateGameID() throws DataAccessException{
+        String getNextIDSQL = "SELECT MAX(gameID) FROM Games";
+        try(Connection conn = DatabaseManager.getConnection();
+            PreparedStatement getNextIDStatement = conn.prepareStatement(getNextIDSQL)) {
+            ResultSet rs = getNextIDStatement.executeQuery();
+            if(rs.next()) {
+                int newID = rs.getInt(1);
+                return newID + 1;
+            } else {
+                return 1; //if there is nothing in the database yet.
+            }
+        } catch (SQLException e) {
+                throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -107,7 +112,7 @@ public class MySQLGameDataAccess extends GameDataAccess{
             createGameStatement.setString(2, null);
             createGameStatement.setString(3, newGame.gameName());
 
-            var json = new Gson().toJson(newGame);
+            var json = new Gson().toJson(newGame.game());
             createGameStatement.setString(4, json);
             
             int rowsAffected = createGameStatement.executeUpdate();
