@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -242,5 +244,56 @@ public class DataAccessUnitTests {
         }
     }
 
+    @Test
+    @Order(16)
+    public void GoodGetNameByID() {
+        ChessGame chessGame = new ChessGame();
+        GameData gameData = new GameData(1, null, null, "showdown", chessGame);
+        try{
+            fakeGameSQL.createGame(1, gameData);
+            int getGameID = fakeGameSQL.getGameIDByName("showdown");
+            assertEquals(1, getGameID);
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
+
+    @Test
+    @Order(17)
+    public void BadGetNameByID() {
+        try{
+            assertNull(fakeGameSQL.getGameIDByName("showdown"));
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
+
+    @Test
+    @Order(18)
+    public void GoodListGames() {
+        ChessGame chessGame = new ChessGame();
+        GameData gameData = new GameData(1, null, null, "showdown", chessGame);
+        ChessGame theSequel = new ChessGame();
+        GameData moreData = new GameData(2, null, null, "boogaloo", theSequel);
+        try{
+            fakeGameSQL.createGame(1, gameData);
+            fakeGameSQL.createGame(2, moreData);
+            Map<Integer, GameData> gamesList = fakeGameSQL.listGames();
+            assertEquals(2, gamesList.size());
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
+
+    @Test
+    @Order(19)
+    public void BadListGames() {
+        try{
+            Map<Integer, GameData> gamesList = fakeGameSQL.listGames();
+            assertTrue(gamesList.isEmpty());
+        } catch (DataAccessException e) {
+            fail("DataAccessException :C");
+        }
+    }
 
 }
