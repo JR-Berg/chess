@@ -355,8 +355,28 @@ public class ChessPiece {
         return movesList;
     }
 
-//    private Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList,
-//                                             Boolean hop, int[] directionRow, int[] directionColumn) {
-//
-//    }
+    private Collection<ChessMove> moveType1(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> movesList,
+                                             int[] directionRow, int[] directionCol, int newRow, int newCol, int i) {
+        while (true) {
+            newRow += directionRow[i];
+            newCol += directionCol[i];
+            if (newRow <= 0 || newRow > board.getRowBounds() || newCol <= 0 || newCol > board.getColumnBounds()) {
+                break;
+            }
+            ChessPosition newPos = new ChessPosition(newRow, newCol);
+            if (board.getPiece(newPos) != null) {
+                if (board.getPiece(newPos).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(newPos).getPieceType() == PieceType.KING) {
+                        //Adding this to all movement checks to be able to easily check if a piece's legal move list
+                        //can take the enemy king.
+                        hasCheck = true;
+                    }
+                    movesList.add(new ChessMove(myPosition, newPos, null));
+                }
+                break;
+            }
+            movesList.add(new ChessMove(myPosition, newPos, null)); //null promotion since this is not a pawn
+        }
+        return movesList;
+    }
 }
