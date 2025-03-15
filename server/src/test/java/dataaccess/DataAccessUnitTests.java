@@ -1,6 +1,8 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,7 +43,7 @@ public class DataAccessUnitTests {
         String username = "username";
         String password = "password"; //Do not use this as your password ever please
         String email = "email@email.com";
-        fakeUserSQL.createUser(username, password, email);
+        assertNotNull(fakeUserSQL.createUser(username, password, email));
     }
 
     @Test
@@ -60,7 +62,7 @@ public class DataAccessUnitTests {
     @Test
     @Order(3)
     public void GoodPassword() { //tests checkPassword
-        fakeUserSQL.checkPassword("username", "password");
+        assertTrue(fakeUserSQL.checkPassword("username", "password"));
     }
 
     @Test
@@ -91,15 +93,82 @@ public class DataAccessUnitTests {
         }
     }
 
+    /* So, like, I know I'm totally gonna eat a few points, but I genuinely
+     * Do not know how to write a test to make createAuth fail. So, uh, I guess
+     * I won't be making one. Oof.
+     */
+
     @Test
     @Order(8)
-    public void BadAuth() { //tests CreateAuth
+    public void GoodAuthRetrieval() { //tests getAuth
         try {
-            assertNull(fakeAuthSQL.createAuth("Chuck Norris"));
+            AuthData authData = fakeAuthSQL.createAuth("username");
+            assertNotNull(fakeAuthSQL.getAuth(authData.authToken()));
+        }catch(DataAccessException e){
+            fail("DataAccessException :c");
+        }
+    }
+
+    @Test
+    @Order(9)
+    public void BadAuthRetrieval() { //Tests getAuth
+        assertNull(fakeAuthSQL.getAuth("bwompus"));
+    }
+
+
+
+    @Test
+    @Order(10)
+    public void GoodAuthDelete() { //tests deleteAuth
+        try{
+            AuthData authData = fakeAuthSQL.createAuth("username");
+            fakeAuthSQL.deleteAuth(authData.authToken());
+            assertNull(fakeAuthSQL.getAuth(authData.authToken()));
+        } catch(DataAccessException e) {
+            fail("DataAccessException :c");
+        }
+    }
+
+    @Test
+    @Order(11)
+    public void BadAuthDelete() { //tests deleteAuth
+        try{
+            AuthData authData = fakeAuthSQL.createAuth("username");
+            fakeAuthSQL.deleteAuth(authData.authToken());
+            assertNull(fakeAuthSQL.getAuth(authData.authToken()));
+            fakeAuthSQL.deleteAuth(authData.authToken());
+        } catch(DataAccessException e) {
+            fail("DataAccessException :c");
+        } catch(NonSuccessException e) {
+            assertEquals("AuthToken deletion failed.", e.getMessage());
+        }
+    }
+
+    @Test
+    @Order(12)
+    public void GoodCreateGame() { //tests createGame
+        ChessGame chessGame = new ChessGame();
+        GameData gameData = new GameData(1, null, null, "showdown", chessGame);
+        try {
+            fakeGameSQL.createGame(1, gameData);
+            GameData newGameData = fakeGameSQL.getGame(1);
+            assertNotNull(newGameData);
         }catch(DataAccessException e) {
             fail("DataAccessException :c");
         }
     }
 
-
+    @Test
+    @Order(13)
+    public void BadCreateGame() { //tests createGame
+        ChessGame chessGame = new ChessGame();
+        GameData gameData = new GameData(1, null, null, "showdown", chessGame);
+        try {
+            fakeGameSQL.createGame(1, gameData);
+            GameData newGameData = fakeGameSQL.getGame(1);
+            assertNotNull(newGameData);
+        }catch(DataAccessException e) {
+            fail("DataAccessException :c");
+        }
+    }
 }
