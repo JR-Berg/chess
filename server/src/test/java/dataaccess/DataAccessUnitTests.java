@@ -1,6 +1,9 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
@@ -347,6 +350,33 @@ public class DataAccessUnitTests {
             fail("DataAccessException :C");
         } catch (WhomstException e) {
             assertEquals("Unknown team", e.getMessage());
+        }
+    }
+
+    @Test
+    @Order(23)
+    public void changeGameTest() {
+        ChessGame chessGame = new ChessGame();
+        GameData gameData = new GameData(1, null, null, "showdown", chessGame);
+        try {
+            fakeGameSQL.createGame(1, gameData);
+            GameData newGameData = fakeGameSQL.getGame(1);
+            assertNotNull(newGameData);
+            ChessPosition startPosition = new ChessPosition(2,2);
+            ChessPosition endPosition = new ChessPosition(4,2);
+            ChessMove newMove = new ChessMove(startPosition, endPosition, null);
+            newGameData.game().makeMove(newMove);
+            fakeGameSQL.updateGame(1, newGameData);
+            GameData gameInDatabase = fakeGameSQL.getGame(1);
+            System.out.println(gameInDatabase.game().getBoard());
+            System.out.println(newGameData.game().getBoard());
+            assertNotEquals(gameData.game(), gameInDatabase.game());
+            assertEquals(newGameData.game(), gameInDatabase.game());
+        }catch(DataAccessException e) {
+            System.out.println(e.getMessage());
+            fail("DataAccessException :c");
+        }catch(InvalidMoveException e) {
+            fail("Move was considered invalid");
         }
     }
 }

@@ -180,6 +180,26 @@ public class MySQLGameDataAccess extends GameDataAccess{
         }
     }
 
+    public void updateGame(Integer gameID, GameData gameData) throws DataAccessException{
+        String updateGameSQL = "UPDATE Games SET game = ? WHERE gameID = ?";
+        Gson gson = new Gson();
+        try(Connection conn = DatabaseManager.getConnection();
+        PreparedStatement updateGameStatement = conn.prepareStatement(updateGameSQL)) {
+            String updatedGame = gson.toJson(gameData.game());
+            updateGameStatement.setString(1, updatedGame);
+            updateGameStatement.setInt(2, gameID);
+
+            int rowsAffected = updateGameStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Game hopefully updated!");
+            } else {
+                System.out.println("Womp womp");
+            }
+        } catch(SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     private void connect() throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try {
